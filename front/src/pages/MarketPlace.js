@@ -6,7 +6,8 @@ import { tableDataTopCreators } from '../test/tableDataTopCreators';
 import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourses } from '../features/courseReducer';
+import { fetchCourses } from '../reducers/courseReducer';
+import { getCourses } from '../actions/courses';
 function SimpleProduct(props) {
     const { image, name, author, price, bidders, download, currentbid } = props;
     return (
@@ -111,12 +112,11 @@ function PaginationView() {
     );
 };
 
-
 function MarketPlace() {
-    const data = useSelector((state) => state.course.data)
+    const data = useSelector((state) => state.course.courses)
     const dispatch= useDispatch()
     useEffect(()=>{
-        dispatch(fetchCourses())
+        dispatch(getCourses())
     },[])
     return (
         <>
@@ -174,7 +174,7 @@ function MarketPlace() {
                             </Flex>
 
                             <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
-                                {data.map((item, index) => {
+                                {data?data.map((item, index) => {
                                     return (
                                         <>
                                             <SimpleProduct
@@ -188,7 +188,7 @@ function MarketPlace() {
                                             />
                                         </>
                                     )
-                                })}
+                                }):<Text>No content available</Text>}
                             </SimpleGrid>
                         </Flex>
                         <Flex
@@ -213,7 +213,7 @@ function MarketPlace() {
                                     <Button variant='action'>See all</Button>
                                 </Flex>
                                 {
-                                    data.map((item, index) => {
+                                    data?data.map((item, index) => {
                                         return (
                                             <HistoryItem
                                                 name={item.title}
@@ -224,7 +224,7 @@ function MarketPlace() {
                                                 price={item.price}
                                             />
                                         )
-                                    })
+                                    }):<Text>No content yet</Text>
                                 }
 
                             </Box>

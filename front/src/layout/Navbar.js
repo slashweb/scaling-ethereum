@@ -7,42 +7,50 @@ import {
     useDisclosure,
     Avatar,
     Text,
+    Box,
 } from "@chakra-ui/react";
-import React, { useEffect } from 'react'
-import { AiFillHome, AiOutlineInbox, AiFillBell, AiOutlineShop } from "react-icons/ai";
+import React, { useCallback, useEffect } from 'react'
+import { AiFillHome, AiFillBell, AiOutlineShop } from "react-icons/ai";
 import { BsFillCameraVideoFill, BsPlus } from "react-icons/bs";
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
-import { setWallet } from "../features/userReducer";
-import Web3 from 'web3'
+import { setBalance, setWallet } from "../actions/users";
+import { useWeb3React } from '@web3-react/core'
+import { connector } from '../config/web3'
+
+
 function Navbar() {
 
+    const { active, activate, deactivate, account, library } = useWeb3React();
     const wallet = useSelector((state) => state.user.wallet)
+    const balance = useSelector((state) => state.user.balance)
     const dispatch = useDispatch()
+    
+    
 
-    function connectWallet() {
-        console.log('Wallet')
-        if (window.ethereum) {
-            
-            const web3 = new Web3(window.ethereum);
-            web3.eth.requestAccounts().then(response => {
-                dispatch(setWallet(response[0]))
-            })
-        }else{
-            console.log('Se necesita instalar una extension de Metamask')
-        }
-    }
-   async function disconnectWallet() {
-        console.log('Disconnecting Wallet')
-        if (window.ethereum) {
-            if(wallet){
-                dispatch(setWallet(''))
-        }}
+    const connect = useCallback(() => {
+        activate(connector)
+    }, [activate])
+
+
+    const getBalance = useCallback(async () => {
+        const toset = await library.eth.getBalance(account)
+        dispatch(setBalance((toset / 1e18).toFixed(2)))
+    })
+
+    async function disconnectWallet() {
+        deactivate()
+        dispatch(setWallet(''))
+        dispatch(setBalance(''))
     }
 
     useEffect(() => {
+        if (active) {
+            dispatch(setWallet(account))
+            getBalance()
+        }
+    })
 
-    }, [])
 
 
     const bg = 'black';
@@ -61,7 +69,7 @@ function Navbar() {
                         <Link
                             to={'/'}
                         >
-                            <Text>Logo</Text>
+                            <Text>Logo {active ? 'hola' : 'adios'}</Text>
                         </Link>
 
                         <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
@@ -100,9 +108,15 @@ function Navbar() {
                         display={mobileNav.isOpen ? "none" : "flex"}
                         alignItems="center"
                     >
-                        <Button colorScheme="brand" leftIcon={<BsPlus />} onClick={wallet?disconnectWallet:connectWallet}>
-                            {wallet?'Disconnect wallet':'Connect wallet'}
-                        </Button>
+                        {balance ?
+                            <Box color='blue' fontWeight={'bold'} backgroundColor='blue.400' p={2} rounded={'md'} >
+                                {balance + ' ETH'}
+                            </Box> : null}
+
+                        <Text color='#ffffff' fontWeight={'bold'} >
+
+                            {wallet ? wallet.substr(0, 3) + '...' + wallet.substr(wallet.length - 3, 3) : 'No wallet'}
+                        </Text>
 
                         <chakra.a
                             p={3}
@@ -114,15 +128,14 @@ function Navbar() {
                             <AiFillBell />
                             <VisuallyHidden>Notifications</VisuallyHidden>
                         </chakra.a>
-                        <Link to={'/profile'}>
-                            <Button
-                                variant="solid"
-                                size="sm"
 
-                            >
-                                {wallet?wallet.substr(0, 3) + '...' + wallet.substr(wallet.length-3, 3):'No wallet'}
-                            </Button>
-                        </Link>
+                        <Button
+                            variant="solid"
+                            size="sm"
+                            leftIcon={wallet ? null : <BsPlus />} onClick={wallet ? connect : connect}
+                        >
+                            {wallet ? 'Disconnect wallet' : 'Connect wallet'}
+                        </Button>
                         <Avatar
                             size="sm"
                             name="Dan Abrahmov"

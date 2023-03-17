@@ -1,9 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import userReducer from './features/userReducer'
+import { userReducer } from './reducers/userReducer'
+
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
-import courseReducer from './features/courseReducer';
+import { courseReducer } from './reducers/courseReducer';
+//import courseReducer from './features/courseReducer';
 
 const persistConfig = {
     key: 'root',
