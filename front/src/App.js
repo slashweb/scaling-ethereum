@@ -7,7 +7,6 @@ import CourseList from './pages/CourseList';
 import VideoCourse from './pages/VideoCourse';
 import Navbar from './layout/Navbar';
 import Footer from './layout/Footer';
-import DashBoard from './pages/DashBoard';
 import Profile from './pages/Profile';
 function App() {
   return (
@@ -16,7 +15,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/marketplace" element={<MarketPlace />} />
-        <Route path="/dashboard" element={<DashBoard/>} />
         <Route path="/courses/:id" element={<CourseDetail />} />
         <Route path="/courses" element={<CourseList/>} />
         <Route path="/courses/play/:id" element={<VideoCourse/>} />

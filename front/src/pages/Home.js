@@ -1,5 +1,5 @@
 import React from 'react'
-import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack } from "@chakra-ui/react";
+import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack} from "@chakra-ui/react";
 
 
 function Hero1() {
@@ -308,16 +308,9 @@ function FeatureView() {
     );
 };
 
-
-
-
-
-
-
 function Home() {
     return (
         <>
-
             <Hero1 />
             <FeatureView />
         </>

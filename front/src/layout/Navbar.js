@@ -83,16 +83,6 @@ function Navbar() {
                                     Marketplace
                                 </Button>
                             </Link>
-                            <Link to={'/dashboard'}>
-                                <Button
-                                    variant="solid"
-                                    colorScheme="brand"
-                                    leftIcon={<AiOutlineInbox />}
-                                    size="sm"
-                                >
-                                    Dashboard
-                                </Button>
-                            </Link>
                             <Link to={'/courses'}>
                                 <Button
                                     variant="solid"

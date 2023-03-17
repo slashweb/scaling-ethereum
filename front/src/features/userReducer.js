@@ -4,7 +4,7 @@ export const userReducer = createSlice({
 
     name: 'user',
     initialState: {
-        wallet: 'hola mundo',
+        wallet: '',
         handle: '',
     },
     reducers: {

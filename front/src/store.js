@@ -1,19 +1,22 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './features/userReducer'
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
+import courseReducer from './features/courseReducer';
 
 const persistConfig = {
     key: 'root',
     storage,
 }
-
-const persistedReducer = persistReducer(persistConfig, userReducer)
+const rootReducer = combineReducers({ 
+    user: userReducer,
+    course: courseReducer
+  })
+const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = configureStore({
-    reducer: {
-        user: persistedReducer
-    },
+    reducer:  persistedReducer,
+    
     middleware: [thunk]
 })
 export const persistor = persistStore(store)
