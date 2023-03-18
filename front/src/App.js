@@ -5,13 +5,12 @@ import MarketPlace from './pages/MarketPlace';
 import CourseDetail from './pages/CourseDetail';
 import CourseList from './pages/CourseList';
 import VideoCourse from './pages/VideoCourse';
-import Navbar from './layout/Navbar';
-import Footer from './layout/Footer';
 import Profile from './pages/Profile';
+import { Layout } from './layout/Layout';
 function App() {
   return (
     <div className="App">
-      <Navbar></Navbar>
+      <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/marketplace" element={<MarketPlace />} />
@@ -20,8 +19,7 @@ function App() {
           <Route path="/courses/play/:id" element={<VideoCourse />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
-      
-      <Footer />
+      </Layout>
     </div>
   );
 }

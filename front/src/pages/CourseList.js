@@ -17,7 +17,7 @@ function CourseItem({content}){
           >
             <Box h={'200px'} borderBottom={'1px'} borderColor="black">
               <Img
-                src={content.preview}
+                src={content.images[0]}
                 roundedTop={'sm'}
                 objectFit="cover"
                 h="full"

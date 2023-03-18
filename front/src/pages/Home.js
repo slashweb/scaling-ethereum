@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
 import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Button } from "@chakra-ui/react";
-import { useDispatch } from 'react-redux';
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
 import { connector } from '../config/web3';
@@ -312,18 +311,12 @@ function FeatureView() {
 };
 
 function Home() {
-    const dispatch = useDispatch()
-
     const { active, account, activate } = useWeb3React()
     const coursesContract = useCourses()
-
     const getCourses = useCallback(async () => {
         if (coursesContract) {
             const res = await coursesContract?.methods?.retrieve()?.call()
-
             console.log('res', res)
-
-            // await coursesContract.methods.store(40).send({ from: account })
         }
 
     }, [coursesContract])
@@ -336,12 +329,10 @@ function Home() {
         if (active) {
             getCourses()
         }
-        connect()
     }, [active, connect, getCourses])
 
     return (
         <>
-            <Button onClick={getCourses}>Press </Button>
             <Hero1 />
             <FeatureView />
         </>

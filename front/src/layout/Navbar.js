@@ -18,15 +18,12 @@ import { setBalance, setWallet } from "../actions/users";
 import { useWeb3React } from '@web3-react/core'
 import { connector } from '../config/web3'
 
-
 function Navbar() {
 
     const { active, activate, deactivate, account, library } = useWeb3React();
     const wallet = useSelector((state) => state.user.wallet)
     const balance = useSelector((state) => state.user.balance)
     const dispatch = useDispatch()
-    
-    
 
     const connect = useCallback(() => {
         activate(connector)
@@ -34,8 +31,8 @@ function Navbar() {
 
 
     const getBalance = useCallback(async () => {
-        const toset = await library.eth.getBalance(account)
-        dispatch(setBalance((toset / 1e18).toFixed(2)))
+        const toSet = await library.eth.getBalance(account)
+        dispatch(setBalance((toSet / 1e18).toFixed(2)))
     })
 
     async function disconnectWallet() {
@@ -51,8 +48,6 @@ function Navbar() {
         }
     })
 
-
-
     const bg = 'black';
     const mobileNav = useDisclosure();
     return (
@@ -66,12 +61,9 @@ function Navbar() {
             >
                 <Flex alignItems="center" justifyContent="space-between" mx="auto">
                     <HStack display="flex" spacing={3} alignItems="center">
-                        <Link
-                            to={'/'}
-                        >
-                            <Text>Logo {active ? 'hola' : 'adios'}</Text>
+                        <Link to={'/'}>
+                            <Text>Logo</Text>
                         </Link>
-
                         <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
                             <Link to={'/'}>
                                 <Button variant="solid"
@@ -132,7 +124,7 @@ function Navbar() {
                         <Button
                             variant="solid"
                             size="sm"
-                            leftIcon={wallet ? null : <BsPlus />} onClick={wallet ? connect : connect}
+                            leftIcon={wallet ? null : <BsPlus />} onClick={wallet ? disconnectWallet : connect}
                         >
                             {wallet ? 'Disconnect wallet' : 'Connect wallet'}
                         </Button>
