@@ -7,6 +7,8 @@ import CourseList from './pages/CourseList';
 import VideoCourse from './pages/VideoCourse';
 import Profile from './pages/Profile';
 import { Layout } from './layout/Layout';
+import Favorites from './pages/Favorites';
+import Notifications from './pages/Notifications';
 function App() {
   return (
     <div className="App">
@@ -18,6 +20,8 @@ function App() {
           <Route path="/courses" element={<CourseList />} />
           <Route path="/courses/play/:id" element={<VideoCourse />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </Layout>
     </div>

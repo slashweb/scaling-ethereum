@@ -8,6 +8,11 @@ import {
     Avatar,
     Text,
     Box,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuDivider,
+    Menu,
 } from "@chakra-ui/react";
 import React, { useCallback, useEffect } from 'react'
 import { AiFillHome, AiFillBell, AiOutlineShop } from "react-icons/ai";
@@ -110,16 +115,18 @@ function Navbar() {
                             {wallet ? wallet.substr(0, 3) + '...' + wallet.substr(wallet.length - 3, 3) : 'No wallet'}
                         </Text>
 
-                        <chakra.a
+                        <Box
                             p={3}
                             color="gray.800"
                             _dark={{ color: "inherit" }}
                             rounded="sm"
                             _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
                         >
+                            <Link to={'notifications'}>
                             <AiFillBell />
                             <VisuallyHidden>Notifications</VisuallyHidden>
-                        </chakra.a>
+                            </Link>
+                        </Box>
 
                         <Button
                             variant="solid"
@@ -128,11 +135,32 @@ function Navbar() {
                         >
                             {wallet ? 'Disconnect wallet' : 'Connect wallet'}
                         </Button>
-                        <Avatar
-                            size="sm"
-                            name="Dan Abrahmov"
-                            src="https://bit.ly/dan-abramov"
-                        />
+                        <Flex>
+                            <Menu>
+                                <MenuButton
+                                    as={Button}
+                                    rounded={'full'}
+                                    variant={'link'}
+                                    cursor={'pointer'}
+                                    minW={0}>
+                                    <Avatar
+                                        size={'sm'}
+                                        src={
+                                            'https://bit.ly/dan-abramov'
+                                        }
+                                    />
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem><Link to={'profile'}>Profile</Link></MenuItem>
+                                    <MenuItem><Link to={'favorites'}>Favorites</Link></MenuItem>
+                                    <MenuItem><Link to={'notifications'}>Notifications</Link></MenuItem>
+                                    <MenuItem>My subscriptions</MenuItem>
+                                    <MenuItem>My subscribers</MenuItem>
+                                    <MenuDivider />
+                                    <MenuItem>Sign Out</MenuItem>
+                                </MenuList>
+                            </Menu>
+                        </Flex>
                     </HStack>
                 </Flex>
             </chakra.header>

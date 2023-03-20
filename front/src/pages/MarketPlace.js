@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
 import Pagination from "@choc-ui/paginator";
-import { Box, Button, Center, Flex, Heading, Image, Link, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Center, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import TopCreatorTable from './marketplace/TopCreatorTable';
+import { Link } from 'react-router-dom'
 import { tableDataTopCreators } from '../test/tableDataTopCreators';
 import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../reducers/courseReducer';
 import { getCourses } from '../actions/courses';
-function SimpleProduct(props) {
-    const { image, name, author, price, bidders, download, currentbid } = props;
+import { BsFillTrashFill, BsPlayBtnFill } from 'react-icons/bs';
+export function SimpleProduct(props) {
+    const { image, name, author, price, bidders, download, currentbid, id } = props;
     return (
         <Center py={4}>
             <Box
@@ -64,6 +66,33 @@ function SimpleProduct(props) {
                             {price}
                         </Text>
                     </Stack>
+                    <HStack>
+                        <Link to={`/courses/${id}`} >
+                            <Flex
+                                py={2}
+                                px={4}
+                                bg={'#406782'}
+
+                                justifyContent={'space-between'}
+                                rounded={'lg'}
+                                cursor={'pointer'}
+                            >
+                                <Text onClick={()=>window.scrollTo(0, 0)} fontSize={'md'} color={'white'} fontWeight={'semibold'}>
+                                    More info
+                                </Text>
+
+                            </Flex>
+                        </Link>
+                        <Link to={`/courses/play/${id}`}>
+                            <Flex
+                                p={4}
+                                justifyContent={'space-between'}
+                                roundedBottom={'sm'}
+                                cursor="pointer">
+                                <Button bg={'#406782'} onClick={() => console.log('click in delete item')}><BsPlayBtnFill fontSize={'24px'} color={'white'} /></Button>
+                            </Flex>
+                        </Link>
+                    </HStack>
                     <Link
                         href={download}
                         mt={{
@@ -177,6 +206,7 @@ function MarketPlace() {
                             {data ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
+                                        id={item.id}
                                         key={index}
                                         name={item.title}
                                         author={item.author}

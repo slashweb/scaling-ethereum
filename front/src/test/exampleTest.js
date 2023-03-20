@@ -39,6 +39,46 @@ const data=[
         bidders:[],
         videoURL:''
     },
+    {
+        id:5,
+        author:'James Hudson',
+        title:'New Content 1',
+        description:'That is a second content by James Hudson',
+        images:['https://cdn-3.expansion.mx/dims4/default/5fd17a8/2147483647/strip/true/crop/3864x2576+0+0/resize/1200x800!/format/webp/quality/90/?url=https%3A%2F%2Fcdn-3.expansion.mx%2F33%2F38%2F425ea19f487680315036da9ef5f3%2Fistock-1334436084.jpg'],
+        price:'0.0019 ETH',
+        bidders:[],
+        videoURL:''
+    },
+    {
+        id:6,
+        author:'James Hudson',
+        title:'New Content 2',
+        description:'That is a third content by James Hudson',
+        images:['https://c4.wallpaperflare.com/wallpaper/756/442/474/mt-rainier-mount-rainier-mount-rainier-national-park-washington-washington-state-hd-wallpaper-thumb.jpg'],
+        price:'0.0019 ETH',
+        bidders:[],
+        videoURL:''
+    },
+    {
+        id:7,
+        author:'James Hudson',
+        title:'New Content 3',
+        description:'That is a fourth content by James Hudson',
+        images:['https://wallup.net/wp-content/uploads/2018/09/25/615115-Canada-colorful-reflection-nature-mountains-landscape.jpg'],
+        price:'0.0019 ETH',
+        bidders:[],
+        videoURL:''
+    },
+    {
+        id:8,
+        author:'James Hudson',
+        title:'New Content 4',
+        description:'That is a fifth content by James Hudson',
+        images:['https://c4.wallpaperflare.com/wallpaper/632/162/458/lago-naturaleza-4k-8k-wallpaper-preview.jpg'],
+        price:'0.0019 ETH',
+        bidders:[],
+        videoURL:''
+    },
 
 ];
 export default data
