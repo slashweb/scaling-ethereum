@@ -153,7 +153,6 @@ function MarketPlace() {
 
                 <Flex flexDirection='row' justifyContent={'space-around'}>
                     <Flex direction='column'>
-
                         <Flex
                             mt='45px'
                             mb='20px'
@@ -203,7 +202,7 @@ function MarketPlace() {
                         </Flex>
 
                         <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
-                            {data ? data.map((item, index) => {
+                            {data.length>0 ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
                                         id={item.id}

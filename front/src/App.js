@@ -9,6 +9,8 @@ import Profile from './pages/Profile';
 import { Layout } from './layout/Layout';
 import Favorites from './pages/Favorites';
 import Notifications from './pages/Notifications';
+import Subscriptions from './pages/Subscriptions';
+import Subscribers from './pages/Subscribers';
 function App() {
   return (
     <div className="App">
@@ -22,6 +24,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/subscriptions" element={<Subscriptions />} />
+          <Route path="/subscribers" element={<Subscribers />} />
         </Routes>
       </Layout>
     </div>

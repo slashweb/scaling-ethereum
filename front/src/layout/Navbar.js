@@ -123,8 +123,8 @@ function Navbar() {
                             _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
                         >
                             <Link to={'notifications'}>
-                            <AiFillBell />
-                            <VisuallyHidden>Notifications</VisuallyHidden>
+                                <AiFillBell />
+                                <VisuallyHidden>Notifications</VisuallyHidden>
                             </Link>
                         </Box>
 
@@ -135,32 +135,34 @@ function Navbar() {
                         >
                             {wallet ? 'Disconnect wallet' : 'Connect wallet'}
                         </Button>
-                        <Flex>
-                            <Menu>
-                                <MenuButton
-                                    as={Button}
-                                    rounded={'full'}
-                                    variant={'link'}
-                                    cursor={'pointer'}
-                                    minW={0}>
-                                    <Avatar
-                                        size={'sm'}
-                                        src={
-                                            'https://bit.ly/dan-abramov'
-                                        }
-                                    />
-                                </MenuButton>
-                                <MenuList>
-                                    <MenuItem><Link to={'profile'}>Profile</Link></MenuItem>
-                                    <MenuItem><Link to={'favorites'}>Favorites</Link></MenuItem>
-                                    <MenuItem><Link to={'notifications'}>Notifications</Link></MenuItem>
-                                    <MenuItem>My subscriptions</MenuItem>
-                                    <MenuItem>My subscribers</MenuItem>
-                                    <MenuDivider />
-                                    <MenuItem>Sign Out</MenuItem>
-                                </MenuList>
-                            </Menu>
-                        </Flex>
+                        {wallet ?
+                            <Flex>
+                                <Menu>
+                                    <MenuButton
+                                        as={Button}
+                                        rounded={'full'}
+                                        variant={'link'}
+                                        cursor={'pointer'}
+                                        minW={0}>
+                                        <Avatar
+                                            size={'sm'}
+                                            src={
+                                                'https://bit.ly/dan-abramov'
+                                            }
+                                        />
+                                    </MenuButton>
+                                    <MenuList>
+                                        <MenuItem><Link to={'profile'} >Profile</Link></MenuItem>
+                                        <MenuItem><Link to={'favorites'} >Favorites</Link></MenuItem>
+                                        <MenuItem><Link to={'notifications'} >Notifications</Link></MenuItem>
+                                        <MenuItem><Link to={'subscriptions'} >My subscriptions</Link></MenuItem>
+                                        <MenuItem><Link to={'subscribers'} >My subscribers</Link></MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem>Sign Out</MenuItem>
+                                    </MenuList>
+                                </Menu>
+                            </Flex>
+                            : null}
                     </HStack>
                 </Flex>
             </chakra.header>

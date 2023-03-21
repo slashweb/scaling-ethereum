@@ -1,4 +1,4 @@
-import { SET_WALLET, SET_HANDLE, SET_BALANCE } from "../types/users"
+import { SET_WALLET, SET_HANDLE, SET_BALANCE, SET_TYPE } from "../types/users"
 
 export const setWallet = wallet => dispatch => {
     dispatch({
@@ -16,5 +16,11 @@ export const setBalance = balance => dispatch => {
     dispatch({
         type: SET_BALANCE,
         payload: balance
+    })
+}
+export const setType = type => dispatch => {
+    dispatch({
+        type: SET_TYPE,
+        payload: type
     })
 }

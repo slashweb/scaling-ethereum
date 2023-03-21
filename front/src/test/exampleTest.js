@@ -47,7 +47,8 @@ const data=[
         images:['https://cdn-3.expansion.mx/dims4/default/5fd17a8/2147483647/strip/true/crop/3864x2576+0+0/resize/1200x800!/format/webp/quality/90/?url=https%3A%2F%2Fcdn-3.expansion.mx%2F33%2F38%2F425ea19f487680315036da9ef5f3%2Fistock-1334436084.jpg'],
         price:'0.0019 ETH',
         bidders:[],
-        videoURL:''
+        videoURL:'',
+        liked:true
     },
     {
         id:6,
@@ -57,7 +58,8 @@ const data=[
         images:['https://c4.wallpaperflare.com/wallpaper/756/442/474/mt-rainier-mount-rainier-mount-rainier-national-park-washington-washington-state-hd-wallpaper-thumb.jpg'],
         price:'0.0019 ETH',
         bidders:[],
-        videoURL:''
+        videoURL:'',
+        liked:true
     },
     {
         id:7,

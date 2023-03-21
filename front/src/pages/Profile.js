@@ -20,9 +20,25 @@ import {
   StatNumber,
   Stat,
   VStack,
+  Modal,
+  useDisclosure,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Select,
+  HStack,
+  FormControl,
+  FormLabel,
+  Textarea,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { BsPerson } from 'react-icons/bs';
 import { FiServer } from 'react-icons/fi';
+import { useDispatch, useSelector } from 'react-redux';
+import { setHandle, setType } from '../actions/users';
 import wallpaperProfile from '../assets/wallpaperProfile.jpeg'
 import data from '../test/exampleTest';
 import { SimpleProduct } from './MarketPlace';
@@ -43,98 +59,119 @@ const userExample = {
     inbox: 6,
   }
 }
-
-const Blur = (props) => {
-  return (
-    <Icon
-      width={useBreakpointValue({ base: '100%', md: '40vw', lg: '30vw' })}
-      zIndex={useBreakpointValue({ base: -1, md: -1, lg: 0 })}
-      height="560px"
-      viewBox="0 0 528 560"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}>
-      <circle cx="71" cy="61" r="111" fill="#F56565" />
-      <circle cx="244" cy="106" r="139" fill="#ED64A6" />
-      <circle cy="291" r="139" fill="#ED64A6" />
-      <circle cx="80.5" cy="189.5" r="101.5" fill="#ED8936" />
-      <circle cx="196.5" cy="317.5" r="101.5" fill="#ECC94B" />
-      <circle cx="70.5" cy="458.5" r="101.5" fill="#48BB78" />
-      <circle cx="426.5" cy="-0.5" r="101.5" fill="#4299E1" />
-    </Icon>
-  );
-};
-
 function SocialProfileWithImage(props) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const dispatch = useDispatch()
+  const handle = useSelector((state) => state.user.handle)
+  const type = useSelector((state) => state.user.type)
+  const [handleForm, setHandleForm] = useState('')
+  const [typeForm, setTypeForm] = useState('')
   return (
-    <Center py={6}>
-      <Box
-        maxW={'80%'}
-        w={'full'}
-        bg={useColorModeValue('white', 'gray.800')}
-        boxShadow={'2xl'}
-        rounded={'md'}
-        pb={10}
-        overflow={'hidden'}>
-        <Image
-          h={'120px'}
+    <>
+      <Center py={6}>
+        <Box
+          maxW={'80%'}
           w={'full'}
-          src={
-            wallpaperProfile
-          }
-          objectFit={'cover'}
-        />
-        <Flex justify={'center'} mt={-12}>
-          <Avatar
-            size={'xl'}
-            src={userExample.avatarURL}
-            alt={'Author'}
-            css={{
-              border: '2px solid white',
-            }}
+          bg={useColorModeValue('white', 'gray.800')}
+          boxShadow={'2xl'}
+          rounded={'md'}
+          pb={10}
+          overflow={'hidden'}>
+          <Image
+            h={'180px'}
+            w={'full'}
+            src={
+              wallpaperProfile
+            }
+            objectFit={'cover'}
           />
-        </Flex>
-        <Box p={6}>
-          <Stack spacing={0} align={'center'} mb={5}>
-            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-              {userExample.handle}
-            </Heading>
-            <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>{userExample.userType}</Text>
-            <Text color={'gray.500'}>{userExample.description}</Text>
-          </Stack>
-          <Stack direction={'row'} justify={'center'} spacing={6}>
-            <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{userExample.subscribers}</Text>
-              <Text fontSize={'sm'} color={'gray.500'}>
-                Subscribers
-              </Text>
+          <Flex justify={'center'} mt={-12}>
+            <Avatar
+              size={'xl'}
+              src={userExample.avatarURL ? userExample.avatarURL : 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png'}
+              alt={'Author'}
+              css={{
+                border: '2px solid white',
+              }}
+            />
+          </Flex>
+          <Box p={6}>
+            <Stack spacing={0} align={'center'} mb={5}>
+              <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
+                {userExample.handle}
+              </Heading>
+              <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>{userExample.userType}</Text>
+              <Text color={'gray.500'}>{userExample.description}</Text>
             </Stack>
-            <Stack spacing={0} align={'center'}>
-              <Text fontWeight={600}>{userExample.following}</Text>
-              <Text fontSize={'sm'} color={'gray.500'}>
-                Following
-              </Text>
+            <Stack direction={'row'} justify={'center'} spacing={6}>
+              <Stack spacing={0} align={'center'}>
+                <Text fontWeight={600}>{userExample.subscribers}</Text>
+                <Text fontSize={'sm'} color={'gray.500'}>
+                  Subscribers
+                </Text>
+              </Stack>
+              <Stack spacing={0} align={'center'}>
+                <Text fontWeight={600}>{userExample.following}</Text>
+                <Text fontSize={'sm'} color={'gray.500'}>
+                  Following
+                </Text>
+              </Stack>
             </Stack>
-          </Stack>
-          <Button
-            w={'2/3'}
-            mt={8}
-            bg={useColorModeValue('#151f21', 'gray.900')}
-            color={'white'}
-            rounded={'md'}
-            _hover={{
-              transform: 'translateY(-2px)',
-              boxShadow: 'lg',
-            }}>
-            Edit profile
-          </Button>
+            <Button
+              w={'2/3'}
+              mt={8}
+              bg={useColorModeValue('#151f21', 'gray.900')}
+              color={'white'}
+              rounded={'md'}
+              onClick={onOpen}
+              _hover={{
+                transform: 'translateY(-2px)',
+                boxShadow: 'lg',
+              }}>
+              Edit profile
+            </Button>
+          </Box>
+          {props.children}
         </Box>
-        {props.children}
-      </Box>
 
-    </Center>
+      </Center>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Editar perfil</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text textAlign={'left'} color={'gray.400'}>Handle (Optional)</Text>
+            <Input fontSize={'xl'} placeholder={'Handle id'} value={handleForm}
+              onChange={(e) => setHandleForm(e.target.value)} />
+            <Text textAlign={'left'} color={'gray.400'}>Choose a type of contributor</Text>
+            <Select value={typeForm} placeholder='Choose one...' onChange={(e) => setTypeForm(e.target.value)}>
+              <option value='creator'>Creator</option>
+              <option value='user'>User</option>
+            </Select>
+          </ModalBody>
+          <ModalFooter>
+            <Button variant='ghost' mr={3} onClick={onClose}>
+              Cancelar
+            </Button>
+            <Button colorScheme='blue'
+              onClick={() => {
+                dispatch(setHandle(handleForm))
+                dispatch(setType(typeForm))
+                console.log('Handle: ', handle, 'Type: ', type)
+                onClose()
+              }
+
+
+              }>Guardar cambios</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
+
+
 function StatsCard({ title, stat, icon }) {
   return (
     <Stat
@@ -163,6 +200,7 @@ function StatsCard({ title, stat, icon }) {
     </Stat>
   );
 }
+
 function UserStatistics() {
   return (
     <Box mx={'auto'} pt={5} px={20} >
@@ -200,6 +238,99 @@ function NoContentbyAuthor() {
   )
 }
 
+function MyContent(){
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [images, setImages]= useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const newData={
+    title:'',
+    price:'',
+    author:'',
+    description:'',
+    images:[]
+  }
+  return(
+    <>
+    <Heading>My Content</Heading>
+    <Button onClick={onOpen}>Add new content</Button>
+    <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Create new content</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Box
+                            p={8}>
+                            <Stack spacing={4}>
+                                <HStack>
+                                    <FormControl id="title" isRequired>
+                                        <FormLabel>Title</FormLabel>
+                                        <Input type="text" onChange={(e) => newData.title=(e.target.value)} />
+                                    </FormControl>
+                                    <FormControl id="price" isRequired>
+                                        <FormLabel>Price</FormLabel>
+                                        <Input type="number" onChange={(e) => newData.price=(e.target.value)} />
+                                    </FormControl>
+                                </HStack>
+                                <FormControl id="description" isRequired>
+                                    <FormLabel>Description</FormLabel>
+                                    <Textarea onChange={(e) => newData.description=(e.target.value)} />
+                                </FormControl>
+
+                                <FormControl id="pictures" isRequired>
+                                    <HStack>
+                                        <FormLabel>URL Images</FormLabel>
+                                        <Button
+                                            size={'xs'}
+                                            colorScheme={'teal'}
+                                            onClick={() => {
+                                                const localTags = [...images]
+                                                localTags.push('')
+                                                setImages(localTags)
+                                            }}
+                                        >+</Button>
+
+                                    </HStack>
+                                    {
+                                        images.map((tag, index) => {
+                                            return <HStack mt={2} key={index}>
+                                                <Input value={tag} onChange={(e) => {
+                                                    const localTags = [...images]
+                                                    localTags[index] = e.target.value
+                                                    setImages(localTags)
+                                                }} />
+                                                <Button size={'sm'} colorScheme={'red'} onClick={() => {
+                                                    const localTags = [...images]
+                                                    localTags.splice(index, 1)
+                                                    setImages(localTags)
+                                                }}>
+                                                    Delete
+                                                </Button>
+                                            </HStack>
+                                        })
+                                    }
+                                </FormControl>
+                            </Stack>
+                        </Box>
+                    </ModalBody>
+
+                    <ModalFooter>
+                        <Button variant='ghost' mr={3} onClick={onClose}>
+                            Close
+                        </Button>
+                        <Button colorScheme='blue' isLoading={isLoading} onClick={()=>createNewContent(newData, images)}>Create content</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+    </>
+  )
+}
+function createNewContent(newData, images){
+  newData.images=images
+  console.log(JSON.stringify(newData))
+
+}
+
 export default function Profile() {
   function getItemsByAuthor(author) {
     const authorContent = data.filter(item => item.author == author)
@@ -230,8 +361,7 @@ export default function Profile() {
       <SocialProfileWithImage>
         <UserStatistics />
       </SocialProfileWithImage>
-      <Heading>My Content</Heading>
-      <Button>Add new content</Button>
+<MyContent />
       {getItemsByAuthor(userExample.handle) ?
         showContentCards(getItemsByAuthor(userExample.handle))
         :
