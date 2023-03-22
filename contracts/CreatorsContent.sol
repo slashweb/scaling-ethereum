@@ -24,7 +24,6 @@ contract CreatorsContent {
         idCourses = 0;
     }
 
-
     function getOwner() external view returns (address) {
         return owner;
     }
