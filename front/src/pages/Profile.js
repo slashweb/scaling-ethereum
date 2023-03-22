@@ -30,7 +30,7 @@ import {
   FormLabel,
   Textarea,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BsPerson } from 'react-icons/bs';
 import { FiServer } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,6 +38,8 @@ import { setHandle, setType } from '../actions/users';
 import wallpaperProfile from '../assets/wallpaperProfile.jpeg'
 import data from '../test/exampleTest';
 import { SimpleProduct } from './MarketPlace';
+import { useWeb3React } from '@web3-react/core';
+import useCourses from '../hooks/useCourses';
 
 const userExample = {
   handle: 'John Doe',
@@ -233,118 +235,150 @@ function NoContentbyAuthor() {
   )
 }
 
-function MyContent(){
+
+function MyContent() {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [images, setImages]= useState([])
+  const [images, setImages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
-  const newData={
-    title:'',
-    price:'',
-    author:'',
-    description:'',
-    images:[]
-  }
-  return(
+  //new data
+  const [title, setTitle] = useState('')
+  const [price, setPrice] = useState(0)
+  const [author, setAuthor] = useState('')
+  const [description, setDescription] = useState('')
+
+  const { active, account, activate } = useWeb3React()
+  const coursesContract = useCourses()
+
+  const createCourse = useCallback(async (title, description, price) => {
+    setIsLoading(true)
+    if (coursesContract) {
+      const res = await coursesContract?.methods?.createNewContent(title,
+        description, price, 'url')?.send({ from: account })
+      console.log('res', res)
+      const res2 = await coursesContract?.methods?.getAllCourses().call()
+      console.log('Courses:', res2)
+      setIsLoading(false)
+    }
+    setIsLoading(false)
+
+  }, [coursesContract])
+  useEffect(() => {
+    createCourse()
+  }, [])
+  return (
     <>
-    <Heading>My Content</Heading>
-    <Button onClick={onOpen}>Add new content</Button>
-    <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Create new content</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Box
-                            p={8}>
-                            <Stack spacing={4}>
-                                <HStack>
-                                    <FormControl id="title" isRequired>
-                                        <FormLabel>Title</FormLabel>
-                                        <Input type="text" onChange={(e) => newData.title=(e.target.value)} />
-                                    </FormControl>
-                                    <FormControl id="price" isRequired>
-                                        <FormLabel>Price</FormLabel>
-                                        <Input type="number" onChange={(e) => newData.price=(e.target.value)} />
-                                    </FormControl>
-                                </HStack>
-                                <FormControl id="description" isRequired>
-                                    <FormLabel>Description</FormLabel>
-                                    <Textarea onChange={(e) => newData.description=(e.target.value)} />
-                                </FormControl>
+      <Heading>My Content</Heading>
+      <Button onClick={onOpen}>Add new content</Button>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create new content</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box
+              p={8}>
+              <Stack spacing={4}>
+                <HStack>
+                  <FormControl id="title" isRequired>
+                    <FormLabel>Title</FormLabel>
+                    <Input type="text" onChange={(e) => setTitle(e.target.value)} />
+                  </FormControl>
+                  <FormControl id="price" isRequired>
+                    <FormLabel>Price</FormLabel>
+                    <Input type="number" onChange={(e) => setPrice(e.target.value)} />
+                  </FormControl>
+                </HStack>
+                <FormControl id="description" isRequired>
+                  <FormLabel>Description</FormLabel>
+                  <Textarea onChange={(e) => setDescription(e.target.value)} />
+                </FormControl>
 
-                                <FormControl id="pictures" isRequired>
-                                    <HStack>
-                                        <FormLabel>URL Images</FormLabel>
-                                        <Button
-                                            size={'xs'}
-                                            colorScheme={'teal'}
-                                            onClick={() => {
-                                                const localTags = [...images]
-                                                localTags.push('')
-                                                setImages(localTags)
-                                            }}
-                                        >+</Button>
+                <FormControl id="pictures" isRequired>
+                  <HStack>
+                    <FormLabel>URL Images</FormLabel>
+                    <Button
+                      size={'xs'}
+                      colorScheme={'teal'}
+                      onClick={() => {
+                        const localTags = [...images]
+                        localTags.push('')
+                        setImages(localTags)
+                      }}
+                    >+</Button>
 
-                                    </HStack>
-                                    {
-                                        images.map((tag, index) => {
-                                            return <HStack mt={2} key={index}>
-                                                <Input value={tag} onChange={(e) => {
-                                                    const localTags = [...images]
-                                                    localTags[index] = e.target.value
-                                                    setImages(localTags)
-                                                }} />
-                                                <Button size={'sm'} colorScheme={'red'} onClick={() => {
-                                                    const localTags = [...images]
-                                                    localTags.splice(index, 1)
-                                                    setImages(localTags)
-                                                }}>
-                                                    Delete
-                                                </Button>
-                                            </HStack>
-                                        })
-                                    }
-                                </FormControl>
-                            </Stack>
-                        </Box>
-                    </ModalBody>
-
-                    <ModalFooter>
-                        <Button variant='ghost' mr={3} onClick={onClose}>
-                            Close
+                  </HStack>
+                  {
+                    images.map((tag, index) => {
+                      return <HStack mt={2} key={index}>
+                        <Input value={tag} onChange={(e) => {
+                          const localTags = [...images]
+                          localTags[index] = e.target.value
+                          setImages(localTags)
+                        }} />
+                        <Button size={'sm'} colorScheme={'red'} onClick={() => {
+                          const localTags = [...images]
+                          localTags.splice(index, 1)
+                          setImages(localTags)
+                        }}>
+                          Delete
                         </Button>
-                        <Button colorScheme='blue' isLoading={isLoading} onClick={()=>createNewContent(newData, images)}>Create content</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+                      </HStack>
+                    })
+                  }
+                </FormControl>
+              </Stack>
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant='ghost' mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button colorScheme='blue' isLoading={isLoading} onClick={() => {
+              createCourse(title, description, price)
+            }
+            }>Create content</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   )
 }
-function createNewContent(newData, images){
-  newData.images=images
-  console.log(JSON.stringify(newData))
-
-}
 
 export default function Profile() {
-  function getItemsByAuthor(author) {
-    const authorContent = data.filter(item => item.author == author)
-    return authorContent
-  }
+  const { active, account, activate } = useWeb3React()
+  const coursesContract = useCourses()
+  const [myCourses, setMyCourses] = useState([])
+  useEffect(() => {
+
+    getItemsByAuthor()
+  }, [active])
+  const getItemsByAuthor = (async () => {
+    // setIsLoading(true)
+    if (coursesContract) {
+      const res = await coursesContract?.methods?.getMyCourses().call({ from: account })
+      console.log('Courses:', JSON.stringify(res))
+      //setIsLoading(false)
+      setMyCourses(res)
+    }
+    // setIsLoading(false)
+
+  })
   function showContentCards(data) {
+    console.log('Data', data)
     return (
       <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12} >
         {data.map((item, index) => {
           return (
             <SimpleProduct
               key={index}
-              name={item.title}
-              author={item.author}
-              bidders={item.bidders}
-              image={item.images[0]}
-              price={item.price}
+              name={item['title']}
+              author={item['author']}
+              bidders={''}
+              image={'https://unipython.com/wp-content/uploads/2019/09/unipython-curso-programacion-983x777.jpg'}
+              price={item['price']}
               download='#'
-              id={item.id}
+              id={item['id']}
             />
           )
         })}
@@ -356,9 +390,9 @@ export default function Profile() {
       <SocialProfileWithImage>
         <UserStatistics />
       </SocialProfileWithImage>
-<MyContent />
-      {getItemsByAuthor(userExample.handle).length>0 ?
-        showContentCards(getItemsByAuthor(userExample.handle))
+      <MyContent />
+      {myCourses.length !== 0 ?
+        showContentCards(myCourses)
         :
         <NoContentbyAuthor />}
     </>

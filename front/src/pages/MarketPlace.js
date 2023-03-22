@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Pagination from "@choc-ui/paginator";
 import { Box, Button, Center, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import TopCreatorTable from './marketplace/TopCreatorTable';
@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../reducers/courseReducer';
 import { getCourses } from '../actions/courses';
 import { BsFillTrashFill, BsPlayBtnFill } from 'react-icons/bs';
+import { useWeb3React } from '@web3-react/core'
+import useCourses from '../hooks/useCourses';
 export function SimpleProduct(props) {
     const { image, name, author, price, bidders, download, currentbid, id } = props;
     return (
@@ -56,7 +58,7 @@ export function SimpleProduct(props) {
                 </Box>
                 <Stack pt={10} align={'center'}>
                     <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
-                        {author}
+                        {author.length===42?author.substr(0, 3) + '...' + author.substr(author.length - 3, 3):author}
                     </Text>
                     <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
                         {name}
@@ -140,13 +142,21 @@ function PaginationView() {
         </Flex>
     );
 };
-
 function MarketPlace() {
-    const data = useSelector((state) => state.course.courses)
-    const dispatch = useDispatch()
+    const { active, account, activate } = useWeb3React()
+    const coursesContract = useCourses()
+    const [data, setData]= useState([])
+    const getCourses = useCallback(async () => {
+        if (coursesContract) {
+          const res = await coursesContract?.methods?.getAllCourses().call()
+          setData(res)
+          console.log(res)
+        }
+      }, [coursesContract])
     useEffect(() => {
-        dispatch(getCourses())
-    }, [])
+        
+          getCourses()
+    }, [active])
     return (
         <>
             <Box pt={{ base: "80px", md: "80px", xl: "80px" }}>
@@ -202,16 +212,16 @@ function MarketPlace() {
                         </Flex>
 
                         <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
-                            {data.length>0 ? data.map((item, index) => {
+                            {data.length!== 0 ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
-                                        id={item.id}
+                                        id={item['id']}
                                         key={index}
-                                        name={item.title}
-                                        author={item.author}
-                                        bidders={item.bidders}
-                                        image={item.images[0]}
-                                        price={item.price}
+                                        name={item['title']}
+                                        author={item['author']}
+                                        bidders={''}
+                                        image={''}
+                                        price={item['price']}
                                         download='#'
                                     />
                                 )
@@ -240,15 +250,15 @@ function MarketPlace() {
                                 <Button variant='action'>See all</Button>
                             </Flex>
                             {
-                                data ? data.map((item, index) => {
+                                data.length!== 0 ? data.map((item, index) => {
                                     return (
                                         <HistoryItem
-                                            name={item.title}
+                                            name={item['title']}
                                             date='30s ago'
                                             key={index}
-                                            author={item.author}
-                                            image={item.images[0]}
-                                            price={item.price}
+                                            author={item['author']}
+                                            image={''}
+                                            price={item['price']}
                                         />
                                     )
                                 }) : <Text>No content yet</Text>
@@ -259,7 +269,6 @@ function MarketPlace() {
 
                 </Flex>
             </Box>
-            <PaginationView />
         </>
 
     )

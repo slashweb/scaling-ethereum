@@ -32,6 +32,7 @@ function Navbar() {
     const dispatch = useDispatch()
 
     const connect = useCallback(() => {
+
         activate(connector)
     }, [activate])
 
@@ -51,8 +52,10 @@ function Navbar() {
         if (active) {
             dispatch(setWallet(account))
             getBalance()
+        } else {
+            connect()
         }
-    })
+    }, [active])
 
     const bg = 'black';
     const mobileNav = useDisclosure();
@@ -157,7 +160,7 @@ function Navbar() {
                                         <MenuItem><Link to={'favorites'} >Favorites</Link></MenuItem>
                                         <MenuItem><Link to={'notifications'} >Notifications</Link></MenuItem>
                                         <MenuItem><Link to={'subscriptions'} >My subscriptions</Link></MenuItem>
-                                        {type==='user'||!type?null:<MenuItem><Link to={'subscribers'} >My subscribers</Link></MenuItem>}
+                                        {type === 'user' || !type ? null : <MenuItem><Link to={'subscribers'} >My subscribers</Link></MenuItem>}
                                         <MenuDivider />
                                         <MenuItem>Sign Out</MenuItem>
                                     </MenuList>
