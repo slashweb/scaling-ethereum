@@ -1,4 +1,5 @@
-import { Avatar, Box, Button, Center, Flex, Grid, Heading, HStack, Image, Input, InputGroup, InputRightElement, Select, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react'
+import { InfoIcon } from '@chakra-ui/icons'
+import { Avatar, Box, Button, Center, Flex, Grid, Heading, HStack, Image, Input, InputGroup, InputRightElement, Select, SimpleGrid, Stack, Text, useColorModeValue, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { SimpleProduct } from './MarketPlace'
 const exampleSubscribers = [{
@@ -105,18 +106,44 @@ function SocialProfile(props) {
     );
 }
 
+function NoSubscribers() {
+    return (
+        <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
+            <VStack>
+                <InfoIcon boxSize={'50px'} color={'blue.500'} />
+                <Heading as="h2" size="lg" mt={6} mb={2}>
+                    You don't have subscribers yet. Share content to get subscribers
+                </Heading>
+            </VStack>
+        </Center>
+    )
+}
+function NotFound(props) {
+    const { search, criteria } = props
+    return (
+        <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
+            <VStack>
+                <InfoIcon boxSize={'50px'} color={'blue.500'} />
+                <Heading as="h2" size="lg" mt={6} mb={2}>
+
+                    Content not found with '{search}' as a {criteria}. Check your spelling or use other terms
+                </Heading>
+            </VStack>
+        </Center>
+    )
+}
+
 function Subscribers() {
     const [search, setSearch] = useState('')
     const [criteria, setCriteria] = useState('')
     const [results, setResults] = useState(exampleSubscribers)
-    console.log(exampleSubscribers)
     const searchBar = (e) => {
         setSearch(e.target.value)
     }
     //funcion para filtrar
     function SearchFunction() {
 
-        if (!search && !criteria) {
+        if (!search || !criteria || criteria === 'all') {
             setResults(exampleSubscribers)
         } else {
             setResults(exampleSubscribers.filter((dato) =>
@@ -127,11 +154,12 @@ function Subscribers() {
         <>
             <HStack bg={'white'} p={5}>
                 <Select w={'1/4'} value={criteria} placeholder='Choose one...' onChange={(e) => setCriteria(e.target.value)}>
+                    <option value='all'>Get All</option>
                     <option value='handle'>Handle</option>
                     <option value='plan'>Plan</option>
                 </Select>
                 <InputGroup>
-                    <Input type="text" disabled={!criteria}
+                    <Input type="text" disabled={!criteria || criteria === 'all'}
                         value={search} onChange={searchBar}
                         onKeyPress={e => {
                             if (e.key === 'Enter') {
@@ -146,23 +174,28 @@ function Subscribers() {
                     </InputRightElement>
                 </InputGroup></HStack>
             <Heading m={10}>My Subscribers</Heading>
-            <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
-                {results ? results.map((item, index) => {
-                    return (
-                        <React.Fragment key={index}>
-                            <SocialProfile
+            {results.length > 0 ?
+                <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
+                    {results.map((item, index) => {
+                        return (
+                            <React.Fragment key={index}>
+                                <SocialProfile
 
-                                handle={item.handle}
-                                wallet={item.wallet}
-                                userType={item.userType}
-                                description={item.description}
-                                avatarURL={item.avatarURL}
-                                plan={item.plan}
-                            />
-                        </React.Fragment>
-                    )
-                }) : <Text>No content available</Text>}
-            </SimpleGrid>
+                                    handle={item.handle}
+                                    wallet={item.wallet}
+                                    userType={item.userType}
+                                    description={item.description}
+                                    avatarURL={item.avatarURL}
+                                    plan={item.plan}
+                                />
+                            </React.Fragment>
+                        )
+                    })}
+                </SimpleGrid>
+                : exampleSubscribers.length > 0 ?
+                    <NotFound search={search} criteria={criteria} />
+                    :
+                    <NoSubscribers />}
         </>
     )
 }

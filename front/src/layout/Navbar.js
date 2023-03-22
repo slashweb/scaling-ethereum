@@ -28,6 +28,7 @@ function Navbar() {
     const { active, activate, deactivate, account, library } = useWeb3React();
     const wallet = useSelector((state) => state.user.wallet)
     const balance = useSelector((state) => state.user.balance)
+    const type = useSelector((state) => state.user.type)
     const dispatch = useDispatch()
 
     const connect = useCallback(() => {
@@ -156,7 +157,7 @@ function Navbar() {
                                         <MenuItem><Link to={'favorites'} >Favorites</Link></MenuItem>
                                         <MenuItem><Link to={'notifications'} >Notifications</Link></MenuItem>
                                         <MenuItem><Link to={'subscriptions'} >My subscriptions</Link></MenuItem>
-                                        <MenuItem><Link to={'subscribers'} >My subscribers</Link></MenuItem>
+                                        {type==='user'||!type?null:<MenuItem><Link to={'subscribers'} >My subscribers</Link></MenuItem>}
                                         <MenuDivider />
                                         <MenuItem>Sign Out</MenuItem>
                                     </MenuList>

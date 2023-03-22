@@ -5,14 +5,10 @@ import {
   Stack,
   Heading,
   Text,
-  Container,
   Input,
   Button,
   SimpleGrid,
   Avatar,
-  AvatarGroup,
-  useBreakpointValue,
-  Icon,
   Center,
   useColorModeValue,
   Image,
@@ -226,7 +222,6 @@ function UserStatistics() {
 }
 function NoContentbyAuthor() {
   return (
-
     <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
       <VStack>
         <InfoIcon boxSize={'50px'} color={'blue.500'} />
@@ -362,7 +357,7 @@ export default function Profile() {
         <UserStatistics />
       </SocialProfileWithImage>
 <MyContent />
-      {getItemsByAuthor(userExample.handle) ?
+      {getItemsByAuthor(userExample.handle).length>0 ?
         showContentCards(getItemsByAuthor(userExample.handle))
         :
         <NoContentbyAuthor />}

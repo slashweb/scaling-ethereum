@@ -3,6 +3,9 @@ import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Button, Avata
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
 import { connector } from '../config/web3';
+import TopCreatorTable from './marketplace/TopCreatorTable';
+import { tableDataTopCreators } from '../test/tableDataTopCreators';
+import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
 
 function Hero1() {
     const bg = useColorModeValue("white", "gray.800");
@@ -445,7 +448,15 @@ function Home() {
     return (
         <>
             <Hero1 />
+            <Box px='20' mx={10} mb='20px'bg={'white'}>
+            <TopCreatorTable
+                tableData={tableDataTopCreators}
+                columnsData={tableColumnsTopCreators}
+            />
+            </Box>
             <FeatureView />
+
+
         </>
     )
 };
