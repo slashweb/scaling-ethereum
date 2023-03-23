@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react'
-import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Button, Avatar } from "@chakra-ui/react";
+import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Button, Avatar, Alert } from "@chakra-ui/react";
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
 import { connector } from '../config/web3';
@@ -427,23 +427,10 @@ function TestimonialCard({ props, index }) {
 function Home() {
     const { active, account, activate } = useWeb3React()
     const coursesContract = useCourses()
-    const getCourses = useCallback(async () => {
-        if (coursesContract) {
-            const res = await coursesContract?.methods?.retrieve()?.call()
-            console.log('res', res)
-        }
-
-    }, [coursesContract])
 
     const connect = useCallback(() => {
         activate(connector)
     }, [activate])
-
-    useEffect(() => {
-        if (active) {
-            getCourses()
-        }
-    }, [active, connect, getCourses])
 
     return (
         <>
