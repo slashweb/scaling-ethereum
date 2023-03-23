@@ -31,10 +31,10 @@ function Navbar() {
     const auth = new Auth()
     const coursesContract = useCourses()
 
-    console.log('contract', coursesContract)
     auth.onAuthUpdate((authState) => {
         if (authState) {
-            console.log('User is logged in', authState)
+            const userId = authState.userId
+            dispatch(setWallet(userId))
         } else {
 
         }
@@ -50,9 +50,7 @@ function Navbar() {
         // activate(connector)
         const authState = await auth.signIn({force: true})
         const userId = authState.userId
-
         dispatch(setWallet(userId))
-        console.log('auth state', authState)
     }, [activate])
 
 
@@ -62,14 +60,9 @@ function Navbar() {
     })
 
     async function disconnectWallet() {
-        deactivate()
+        await auth.signOut()
         dispatch(setWallet(''))
         dispatch(setBalance(''))
-    }
-
-    const test = async () => {
-        const res2 = await coursesContract?.methods?.getAllCourses().call()
-        console.log('test here', res2)
     }
 
     useEffect(() => {
@@ -156,13 +149,6 @@ function Navbar() {
                             </Link>
                         </Box>
 
-                        <Button
-                            variant="solid"
-                            size="sm"
-                            onClick={test}
-                        >
-                            Test btn
-                        </Button>
                         <Button
                             variant="solid"
                             size="sm"
