@@ -3,7 +3,6 @@ import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home';
 import MarketPlace from './pages/MarketPlace';
 import CourseDetail from './pages/CourseDetail';
-import CourseList from './pages/CourseList';
 import VideoCourse from './pages/VideoCourse';
 import Profile from './pages/Profile';
 import { Layout } from './layout/Layout';
@@ -13,6 +12,7 @@ import Subscriptions from './pages/Subscriptions';
 import Subscribers from './pages/Subscribers';
 import { useSelector } from 'react-redux';
 import PageNotFound from './pages/special/PageNotFound';
+import ProfileOtherUsers from './pages/ProfileOtherUsers';
 function App() {
   const type= useSelector((state) => state.user.type)
   return (
@@ -22,9 +22,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/marketplace" element={<MarketPlace />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
-          <Route path="/courses" element={<CourseList />} />
           <Route path="/courses/play/:id" element={<VideoCourse />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:user" element={<ProfileOtherUsers />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/subscriptions" element={<Subscriptions />} />

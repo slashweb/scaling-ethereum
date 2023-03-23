@@ -104,6 +104,7 @@ function CourseDetail() {
   const data = []
   const wallet = useSelector((state) => state.user.wallet)
   const [filteredContent, setFilteredContent] = useState([])
+  const [storageComments, setStorageComments] = useState([])
 
   const getCourseDetail = useCallback(async () => {
     if (coursesContract) {
@@ -127,9 +128,10 @@ function CourseDetail() {
 
   useEffect(() => {
     getCourseDetail()
+    showComments()
     getItemsByAuthor()
   }, [active])
-
+  
   function getRandomItemsExceptCurrent(currentId) {
     const items = data.filter(item => item => item.id != currentId)
     const randomItems = []
@@ -150,7 +152,14 @@ function CourseDetail() {
   const createNewComment = async comment => {
     const idComment = guid()
     const res = await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
-    console.log(res)
+    showComments()
+  }
+  const showComments = async () => {
+    const res = await db.collection("Comments").where("id_post", "==", parseInt(id)).get()
+    console.log('Comments almacenados',res.data)
+    //const filteringCurrent = res.data.filter(item => item.data.id_post ==parseInt(id))
+    //console.log('Filtering',filteringCurrent)
+    return setStorageComments(res.data.reverse())
   }
   return (
     <>
@@ -158,11 +167,12 @@ function CourseDetail() {
         <>
           <Image source={''}></Image>
           <ContentCard
-            courseDetail={courseDetail}
-            onCreateComment={comment => { createNewComment(comment) }}
+            courseDetail = {courseDetail}
+            onCreateComment = {comment => { createNewComment(comment) }}
+            storageComments = {storageComments}
           />
           <Heading>More content about {courseDetail.author}</Heading>
-          {filteredContent?.length !== 0 ? <ShowContentCards data={filteredContent} /> : <NoMoreContentbyAuthor />}
+          {/*filteredContent?.length !== 0 ? <ShowContentCards data={filteredContent} /> : <NoMoreContentbyAuthor />*/}
           <Heading>Related content</Heading>
         </>
         : <RenderNotFound />}
@@ -174,7 +184,7 @@ export default CourseDetail
 //   <>
 //     {getItem(id) ?
 //       <>
-//         <Image source={getItem(id).images[0]}></Image>
+//        <Image source={getItem(id).images[0]}></Image>
 //         <ContentCard props={getItem(id)} />
 //         <Heading>More content about {getItem(id).author}</Heading>
 //         {getItemsByAuthor(getItem(id).author, id) != 0 ? showContentCards(getItemsByAuthor(getItem(id).author, id)) : <NoMoreContentbyAuthor />}

@@ -36,6 +36,7 @@ export default function Profile() {
   const wallet = useSelector((state) => state.user.wallet)
   const createNewCourse = async newCourse => {
     const res = await coursesContract?.methods?.createNewContent(newCourse.title, newCourse.description, newCourse.price, 'url')?.send({ from: wallet })
+    .catch(e=>alert(e))
     console.log('res', res)
   }
 
@@ -44,6 +45,7 @@ export default function Profile() {
     if (coursesContract) {
       const res = await coursesContract?.methods?.getMyCourses().call({ from: wallet })
       //setIsLoading(false)
+      .catch(e=>alert(e))
       setMyCourses(res)
     }
     // setIsLoading(false)
