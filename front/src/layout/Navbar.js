@@ -14,26 +14,45 @@ import {
     MenuDivider,
     Menu,
 } from "@chakra-ui/react";
-import React, { useCallback, useEffect } from 'react'
-import { AiFillHome, AiFillBell, AiOutlineShop } from "react-icons/ai";
-import { BsFillCameraVideoFill, BsPlus } from "react-icons/bs";
-import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'
-import { setBalance, setWallet } from "../actions/users";
-import { useWeb3React } from '@web3-react/core'
-import { connector } from '../config/web3'
+import React, {useCallback, useEffect} from 'react'
+import {AiFillHome, AiFillBell, AiOutlineShop} from "react-icons/ai";
+import {BsFillCameraVideoFill, BsPlus} from "react-icons/bs";
+import {Link} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux'
+import {setBalance, setWallet} from "../actions/users";
+import {useWeb3React} from '@web3-react/core'
+import {connector} from '../config/web3'
+import {Auth} from '@polybase/auth'
+import useCourses from "../hooks/useCourses";
+import Web3 from "web3";
 
 function Navbar() {
 
-    const { active, activate, deactivate, account, library } = useWeb3React();
+    const auth = new Auth()
+    const coursesContract = useCourses()
+
+    console.log('contract', coursesContract)
+    auth.onAuthUpdate((authState) => {
+        if (authState) {
+            console.log('User is logged in', authState)
+        } else {
+
+        }
+    })
+
+    const {active, activate, deactivate, account, library} = useWeb3React();
     const wallet = useSelector((state) => state.user.wallet)
     const balance = useSelector((state) => state.user.balance)
     const type = useSelector((state) => state.user.type)
     const dispatch = useDispatch()
 
-    const connect = useCallback(() => {
+    const connect = useCallback(async () => {
+        // activate(connector)
+        const authState = await auth.signIn({force: true})
+        const userId = authState.userId
 
-        activate(connector)
+        dispatch(setWallet(userId))
+        console.log('auth state', authState)
     }, [activate])
 
 
@@ -46,6 +65,11 @@ function Navbar() {
         deactivate()
         dispatch(setWallet(''))
         dispatch(setBalance(''))
+    }
+
+    const test = async () => {
+        const res2 = await coursesContract?.methods?.getAllCourses().call()
+        console.log('test here', res2)
     }
 
     useEffect(() => {
@@ -64,7 +88,7 @@ function Navbar() {
             <chakra.header
                 bg={bg}
                 w="full"
-                px={{ base: 2, sm: 4 }}
+                px={{base: 2, sm: 4}}
                 py={4}
                 shadow="md"
             >
@@ -73,12 +97,12 @@ function Navbar() {
                         <Link to={'/'}>
                             <Text>Logo</Text>
                         </Link>
-                        <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
+                        <HStack spacing={3} display={{base: "none", md: "inline-flex"}}>
                             <Link to={'/'}>
                                 <Button variant="solid"
-                                    leftIcon={<AiFillHome />}
-                                    colorScheme="brand"
-                                    size="sm">
+                                        leftIcon={<AiFillHome/>}
+                                        colorScheme="brand"
+                                        size="sm">
                                     Home
                                 </Button>
                             </Link>
@@ -86,7 +110,7 @@ function Navbar() {
                                 <Button
                                     variant="solid"
                                     colorScheme="brand"
-                                    leftIcon={<AiOutlineShop />}
+                                    leftIcon={<AiOutlineShop/>}
                                     size="sm"
                                 >
                                     Marketplace
@@ -96,7 +120,7 @@ function Navbar() {
                                 <Button
                                     variant="solid"
                                     colorScheme="brand"
-                                    leftIcon={<BsFillCameraVideoFill />}
+                                    leftIcon={<BsFillCameraVideoFill/>}
                                     size="sm"
                                 >
                                     Courses
@@ -110,11 +134,11 @@ function Navbar() {
                         alignItems="center"
                     >
                         {balance ?
-                            <Box color='blue' fontWeight={'bold'} backgroundColor='blue.400' p={2} rounded={'md'} >
+                            <Box color='blue' fontWeight={'bold'} backgroundColor='blue.400' p={2} rounded={'md'}>
                                 {balance + ' ETH'}
                             </Box> : null}
 
-                        <Text color='#ffffff' fontWeight={'bold'} >
+                        <Text color='#ffffff' fontWeight={'bold'}>
 
                             {wallet ? wallet.substr(0, 3) + '...' + wallet.substr(wallet.length - 3, 3) : 'No wallet'}
                         </Text>
@@ -122,12 +146,12 @@ function Navbar() {
                         <Box
                             p={3}
                             color="gray.800"
-                            _dark={{ color: "inherit" }}
+                            _dark={{color: "inherit"}}
                             rounded="sm"
-                            _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
+                            _hover={{color: "gray.800", _dark: {color: "gray.600"}}}
                         >
                             <Link to={'notifications'}>
-                                <AiFillBell />
+                                <AiFillBell/>
                                 <VisuallyHidden>Notifications</VisuallyHidden>
                             </Link>
                         </Box>
@@ -135,7 +159,14 @@ function Navbar() {
                         <Button
                             variant="solid"
                             size="sm"
-                            leftIcon={wallet ? null : <BsPlus />} onClick={wallet ? disconnectWallet : connect}
+                            onClick={test}
+                        >
+                            Test btn
+                        </Button>
+                        <Button
+                            variant="solid"
+                            size="sm"
+                            leftIcon={wallet ? null : <BsPlus/>} onClick={wallet ? disconnectWallet : connect}
                         >
                             {wallet ? 'Disconnect wallet' : 'Connect wallet'}
                         </Button>
@@ -156,12 +187,13 @@ function Navbar() {
                                         />
                                     </MenuButton>
                                     <MenuList>
-                                        <MenuItem><Link to={'profile'} >Profile</Link></MenuItem>
-                                        <MenuItem><Link to={'favorites'} >Favorites</Link></MenuItem>
-                                        <MenuItem><Link to={'notifications'} >Notifications</Link></MenuItem>
-                                        <MenuItem><Link to={'subscriptions'} >My subscriptions</Link></MenuItem>
-                                        {type === 'user' || !type ? null : <MenuItem><Link to={'subscribers'} >My subscribers</Link></MenuItem>}
-                                        <MenuDivider />
+                                        <MenuItem><Link to={'profile'}>Profile</Link></MenuItem>
+                                        <MenuItem><Link to={'favorites'}>Favorites</Link></MenuItem>
+                                        <MenuItem><Link to={'notifications'}>Notifications</Link></MenuItem>
+                                        <MenuItem><Link to={'subscriptions'}>My subscriptions</Link></MenuItem>
+                                        {type === 'user' || !type ? null :
+                                            <MenuItem><Link to={'subscribers'}>My subscribers</Link></MenuItem>}
+                                        <MenuDivider/>
                                         <MenuItem>Sign Out</MenuItem>
                                     </MenuList>
                                 </Menu>

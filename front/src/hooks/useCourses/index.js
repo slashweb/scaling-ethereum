@@ -1,17 +1,11 @@
-import { useMemo } from "react";
-import { useWeb3React } from "@web3-react/core"
 import { CoursesArtifact } from "../../artifacts/Courses";
+import Web3 from "web3";
+import {CHAIN_ID} from "../../constants";
 
 const { address, abi } = CoursesArtifact
 const useCourses = () => {
-    
-    const { active, library, chainId } = useWeb3React()
-    const courses = useMemo(() => {
-        if (active) {
-            return new library.eth.Contract(abi, address[chainId])  
-        } 
-    }, [active, chainId, library?.eth?.Contract])
-    return courses
+    const web3 = new Web3(Web3.givenProvider)
+    return new web3.eth.Contract(abi, address[CHAIN_ID])
 }
 
 export default useCourses
