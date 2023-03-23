@@ -1,45 +1,26 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import _uniqueId from 'lodash/uniqueId';
-import { AiOutlineSend } from 'react-icons/ai'
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
 import {
-  Box,
-  Container,
   Heading,
   SimpleGrid,
-  Icon,
   Text,
   Stack,
-  HStack,
   VStack,
   Image,
   CardFooter,
   Button,
   CardBody,
-  IconButton,
-  CardHeader,
   Card,
-  Flex,
-  Avatar,
   Center,
-  Input,
 } from '@chakra-ui/react';
 import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { SimpleProduct } from './MarketPlace';
-import { Polybase } from "@polybase/client";
 import { useSelector } from 'react-redux';
 import ContentCard from './CourseDetails.js/ContentCard';
 import { guid } from '../utils';
 import { db } from '../constants';
-
-
-
-
-
 
 function RenderNotFound() {
   return (
@@ -93,8 +74,7 @@ function NoMoreContentbyAuthor() {
   )
 }
 
-
-function showContentCards(data) {
+function ShowContentCards(data) {
   return (
     <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12} >
       {data.map((item, index) => {
@@ -105,7 +85,7 @@ function showContentCards(data) {
             name={item.title}
             author={item.author}
             bidders={item.bidders}
-            image={item.images[0]}
+            image={''}
             price={item.price}
             download='#'
           />
@@ -117,34 +97,39 @@ function showContentCards(data) {
 
 function CourseDetail() {
 
-
   const { id } = useParams()
   const { active, account, activate } = useWeb3React()
   const coursesContract = useCourses()
   const [courseDetail, setCourseDetail] = useState([])
   const data = []
   const wallet = useSelector((state) => state.user.wallet)
+  const [filteredContent, setFilteredContent] = useState([])
 
   const getCourseDetail = useCallback(async () => {
     if (coursesContract) {
       const res = await coursesContract?.methods?.getCourseDetail(id).call()
       setCourseDetail(res)
-      console.log(res)
+
     }
   }, [coursesContract])
+
+  const getItemsByAuthor = useCallback(async () => {
+    // setIsLoading(true)
+    if (coursesContract) {
+      const res = await coursesContract?.methods?.getMyCourses().call({ from: courseDetail.author })
+      //setIsLoading(false)
+      const filteringCurrent = res.filter(item => item.id !== id)
+      setFilteredContent(filteringCurrent)
+      console.log(filteringCurrent)
+    }
+    // setIsLoading(false)
+  }, [coursesContract, active])
+
   useEffect(() => {
     getCourseDetail()
+    getItemsByAuthor()
   }, [active])
 
-  function getItem(id) {
-    const res = data.filter(item => item.id == id)
-    return res[0]
-  }
-  function getItemsByAuthor(author, currentId) {
-    const authorContent = data.filter(item => item.author == author)
-    const filteringCurrent = authorContent.filter(item => item.id != currentId)
-    return filteringCurrent
-  }
   function getRandomItemsExceptCurrent(currentId) {
     const items = data.filter(item => item => item.id != currentId)
     const randomItems = []
@@ -163,13 +148,10 @@ function CourseDetail() {
     return randomItems
   }
   const createNewComment = async comment => {
-
     const idComment = guid()
     const res = await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
     console.log(res)
   }
-
-
   return (
     <>
       {courseDetail ?
@@ -179,11 +161,30 @@ function CourseDetail() {
             courseDetail={courseDetail}
             onCreateComment={comment => { createNewComment(comment) }}
           />
-
+          <Heading>More content about {courseDetail.author}</Heading>
+          {filteredContent?.length !== 0 ? <ShowContentCards data={filteredContent} /> : <NoMoreContentbyAuthor />}
+          <Heading>Related content</Heading>
         </>
         : <RenderNotFound />}
     </>
   )
 }
-
 export default CourseDetail
+// return (
+//   <>
+//     {getItem(id) ?
+//       <>
+//         <Image source={getItem(id).images[0]}></Image>
+//         <ContentCard props={getItem(id)} />
+//         <Heading>More content about {getItem(id).author}</Heading>
+//         {getItemsByAuthor(getItem(id).author, id) != 0 ? showContentCards(getItemsByAuthor(getItem(id).author, id)) : <NoMoreContentbyAuthor />}
+//         <Heading>Related content</Heading>
+//         {data ? showContentCards(getRandomItemsExceptCurrent(id))
+//           :
+//           <Heading as="h2" size="lg" mt={6} mb={2}>
+//             There are no content available
+//           </Heading>}
+//       </>
+//       : <RenderNotFound />}
+//   </>
+// )

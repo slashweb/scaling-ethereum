@@ -51,7 +51,6 @@ function CourseItem({ content }) {
               py={2}
               px={4}
               bg={'#406782'}
-
               justifyContent={'space-between'}
               rounded={'lg'}
               cursor={'pointer'}
@@ -92,7 +91,7 @@ function CourseList() {
       <HStack>
         {data.map((item, index) => {
           return (
-            <CourseItem key={index} content={item} />
+            <CourseItem content={item} />
           )
         })}
       </HStack>

@@ -2,10 +2,7 @@ import {
   Box,
   Container,
   Heading,
-  SimpleGrid,
-  Icon,
   Text,
-  Stack,
   HStack,
   VStack,
   Image,
@@ -24,8 +21,6 @@ import { useState } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 import { BiChat, BiLike } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { useSelector } from 'react-redux';
-
 
 export default function ContentCard({ courseDetail, onCreateComment }) {
   const { author, title, description } = courseDetail
