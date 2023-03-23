@@ -32,13 +32,22 @@ export default function ProfileOtherUsers() {
     const coursesContract = useCourses()
     const [myCourses, setMyCourses] = useState([])
     const wallet = useSelector((state) => state.user.wallet)
+    const [followersNumber, setFollowersNumber] = useState(0)
+    const [followingNumber, setFollowingNumber] = useState(0)
 
     const newFavoriteUser = async () => {
-        console.log('Llegando')
         const idFavorite = guid()
         const res = await db.collection("Favorites").create([idFavorite, wallet, user])
             .catch(e => alert(e))
         console.log(res)
+    }
+    const getFollowersCount = async () => {
+        const res = await db.collection("Favorites").where("following_user", "==", user).get()
+        setFollowersNumber(res.data.length)
+    }
+    const getFollowingCount = async () => {
+        const res = await db.collection("Favorites").where("user", "==", user).get()
+        setFollowingNumber(res.data.length)
     }
 
     const getItemsByAuthor = (async () => {
@@ -59,12 +68,14 @@ export default function ProfileOtherUsers() {
             console.log('false, wallet/user: ', wallet, user)
         }
         getItemsByAuthor()
+        getFollowersCount()
+        getFollowingCount()
     }, [active])
 
     return (
         <>
-            <SocialProfile onNewFavorite={() => newFavoriteUser()} user={user}>
-                
+            <SocialProfile onNewFavorite={() => newFavoriteUser()} followers={followersNumber} following={followingNumber}>
+
             </SocialProfile>
             {myCourses?.length > 0 ?
                 <ShowContentCards courses={myCourses} />
