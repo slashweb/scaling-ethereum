@@ -18,9 +18,10 @@ import {
     FormLabel,
     Textarea,
 } from "@chakra-ui/react"
+import FilePicker from "chakra-ui-file-picker";
+import {makeStorageClient} from "../../utils";
 
-
-export default function MyContent({ onCreateCourse }) {
+export default function MyContent({onCreateCourse}) {
 
     const {isOpen, onOpen, onClose} = useDisclosure()
     const [images, setImages] = useState([])
@@ -64,16 +65,37 @@ export default function MyContent({ onCreateCourse }) {
 
                                 <FormControl id="pictures" isRequired>
                                     <HStack>
-                                        <FormLabel>URL Images</FormLabel>
-                                        <Button
-                                            size={'xs'}
-                                            colorScheme={'teal'}
-                                            onClick={() => {
-                                                const localTags = [...images]
-                                                localTags.push('')
-                                                setImages(localTags)
-                                            }}
-                                        >+</Button>
+
+                                        <Input
+                                            placeholder="Select Date and Time"
+                                            size="md"
+                                            type="file"
+                                            onChange={async (e) => {
+                                                const fileList = e.target.files
+                                                console.log('list', fileList)
+                                                const client = makeStorageClient()
+                                                const cid = await client.put(fileList)
+                                                console.log('storage', cid)
+                                                console.log('on file', fileList)
+                                                console.log('the file', await client.get(cid))
+                                            }
+                                            }
+                                        />
+                                        {/*<FilePicker*/}
+                                        {/*    onFileChange={ async (fileList) => {*/}
+                                        {/*        console.log('list', fileList[0])*/}
+                                        {/*        const client = makeStorageClient()*/}
+                                        {/*        const cid = await client.put(fileList[0])*/}
+                                        {/*        console.log('storage', cid)*/}
+                                        {/*        console.log('on file', fileList)*/}
+                                        {/*        console.log('the file', await client.get(cid))*/}
+                                        {/*    }}*/}
+                                        {/*    placeholder={"Content Image"}*/}
+                                        {/*    clearButtonLabel='browse'*/}
+                                        {/*    multipleFiles={false}*/}
+                                        {/*    accept="image/jpg"*/}
+                                        {/*    hideClearButton={false}*/}
+                                        {/*/>*/}
 
                                     </HStack>
                                     {
@@ -104,7 +126,7 @@ export default function MyContent({ onCreateCourse }) {
                             Close
                         </Button>
                         <Button colorScheme='blue' onClick={() => {
-                            createCourse(title, description, price)
+                            createCourse()
                         }
                         }>Create content</Button>
                     </ModalFooter>
