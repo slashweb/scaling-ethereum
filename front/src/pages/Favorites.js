@@ -1,7 +1,10 @@
 import { InfoIcon } from '@chakra-ui/icons'
 import { Button, Center, Heading, HStack, Input, InputGroup, InputRightElement, Select, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { db } from '../constants'
 import data from '../test/exampleTest'
+import { guid } from '../utils'
 import { SimpleProduct } from './MarketPlace'
 function NoFavorites() {
   return (
@@ -34,6 +37,14 @@ function Favorites() {
   const [criteria, setCriteria] = useState('')
   const favoriteContent = data.filter((item) => item.liked === true)
   const [results, setResults] = useState(favoriteContent)
+  const wallet = useSelector((state) => state.user.wallet)
+
+  const newFavoriteUser=async()=>{
+    const idFavorite= guid()
+    const res = await db.collection("Favorites").create([idFavorite, wallet, '0x2fa4565D6d1E3aC132C592E32DB9a960EDAA06dF'])
+    .catch(e=>alert(e))
+    console.log(res)
+  }
 
   const searchBar = (e) => {
     setSearch(e.target.value)
@@ -72,6 +83,8 @@ function Favorites() {
             </Button>
           </InputRightElement>
         </InputGroup></HStack>
+      <Heading mt={10}>My favorite users</Heading>
+      <Button onClick={()=>newFavoriteUser()}>Dar favorito a victor</Button>
       <Heading mt={10}>My favorite content</Heading>
       {results.length > 0 ?
         <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>

@@ -109,16 +109,6 @@ function Navbar() {
                                     Marketplace
                                 </Button>
                             </Link>
-                            <Link to={'/courses'}>
-                                <Button
-                                    variant="solid"
-                                    colorScheme="brand"
-                                    leftIcon={<BsFillCameraVideoFill/>}
-                                    size="sm"
-                                >
-                                    Courses
-                                </Button>
-                            </Link>
                         </HStack>
                     </HStack>
                     <HStack

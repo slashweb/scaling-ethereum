@@ -16,23 +16,100 @@ import {
   Avatar,
   Center,
   Input,
+  useColorModeValue,
+  chakra
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
 import { BiChat, BiLike } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { Link } from 'react-router-dom';
 
-export default function ContentCard({ courseDetail, onCreateComment }) {
+
+function CommentCard({ props }) {
+  const { author, comment } = props;
+  const time = '24/03/2023'
+  const avatar = ''
+  return (
+    <Flex
+      boxShadow={'lg'}
+      direction={{ base: 'column-reverse', md: 'row' }}
+      width={'full'}
+      rounded={'xl'}
+      mt={3}
+      p={10}
+      justifyContent={'space-between'}
+      position={'relative'}
+      bg={useColorModeValue('white', 'gray.800')}
+      _before={{
+        content: '""',
+        position: 'absolute',
+        zIndex: '-1',
+        height: 'full',
+        maxW: '640px',
+        width: 'full',
+        filter: 'blur(40px)',
+        transform: 'scale(0.98)',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        top: 0,
+        left: 0,
+      }}>
+      <Flex
+        direction={'column'}
+        textAlign={'left'}
+        justifyContent={'space-between'}>
+        <HStack>
+          <Text fontWeight={'bold'} fontSize={14}>
+            {author} </Text>
+          <chakra.span
+            fontWeight={'medium'}
+            color={'gray.500'}>
+            {' '}
+            - {time}
+          </chakra.span>
+
+
+        </HStack>
+        <Text
+
+          fontWeight={'medium'}
+          fontSize={'15px'}
+          pb={4}>
+          {comment}
+        </Text>
+
+      </Flex>
+
+      <Avatar
+        src={avatar}
+        height={'80px'}
+        width={'80px'}
+        alignSelf={'center'}
+        m={{ base: '0 0 35px 0', md: '0 0 0 50px' }}
+      />
+    </Flex>
+  );
+}
+
+
+export default function ContentCard({ courseDetail, onCreateComment, storageComments }) {
   const { author, title, description } = courseDetail
   const [comment, setComment] = useState('')
+
+  useEffect(() => {
+  }, [])
+
   return (
-    <Container maxW='4/6' p={14}>
-      <Card p={14} m={20}>
+    <Container maxW={'1200'} p={14}>
+      <Card p={10} m={20}>
         <CardHeader alignItems={'center'}>
           <Flex spacing='4' >
             <Center flex='1' gap='12' >
               <VStack alignItems={'center'}>
-                <Avatar name={author} src='https://bit.ly/sage-adebayo' size={'xl'} />
+                <Link to={`/profile/${author}`}>
+                  <Avatar name={author} src='https://bit.ly/sage-adebayo' size={'xl'} />
+                </Link>
                 <Box alignSelf={'center'}>
                   <Heading size='lg' autoCapitalize='true'>{author}</Heading>
                   <Text>Creator</Text>
@@ -95,8 +172,17 @@ export default function ContentCard({ courseDetail, onCreateComment }) {
             <AiOutlineSend size={'48'} />
           </IconButton>
         </HStack>
+        <Box mt={16}>
+          {storageComments.length > 0 ? storageComments.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <CommentCard props={item.data} />
+              </React.Fragment>
+            )
+          })
+            : <Text>This content has no comments</Text>}
+        </Box>
       </Card>
     </Container>
   )
 }
-
