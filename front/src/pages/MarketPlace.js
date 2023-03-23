@@ -149,6 +149,9 @@ function MarketPlace() {
     const getCourses = useCallback(async () => {
         if (coursesContract) {
           const res = await coursesContract?.methods?.getAllCourses().call()
+          .catch(e=>{
+            alert(e.message, e.code)
+          })
           setData(res)
           console.log(res)
         }

@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 
 import { AiOutlineSend } from 'react-icons/ai'
-
+import { useWeb3React } from '@web3-react/core'
+import useCourses from '../hooks/useCourses';
 import {
   Box,
   Container,
@@ -26,52 +27,11 @@ import {
   Input,
 } from '@chakra-ui/react';
 import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
-import data from '../test/exampleTest';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { SimpleProduct } from './MarketPlace';
 
-// Replace test data with your own
-const features = Array.apply(null, Array(8)).map(function (x, i) {
-  return {
-    id: i,
-    title: 'Lorem ipsum dolor sit amet',
-    text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam.',
-  };
-});
-
-function GridListWithHeading() {
-  return (
-    <Box p={4}>
-      <Stack spacing={4} as={Container} maxW={'3xl'} textAlign={'center'}>
-        <Heading fontSize={'3xl'}>This is the headline</Heading>
-        <Text color={'gray.600'} fontSize={'xl'}>
-          Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-          nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-          sed diam voluptua.
-        </Text>
-      </Stack>
-
-      <Container maxW={'6xl'} mt={10}>
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={10}>
-          {features.map((feature) => (
-            <HStack key={feature.id} align={'top'}>
-              <Box color={'green.400'} px={2}>
-                <Icon as={CheckIcon} />
-              </Box>
-              <VStack align={'start'}>
-                <Text fontWeight={600}>{feature.title}</Text>
-                <Text color={'gray.600'}>{feature.text}</Text>
-              </VStack>
-            </HStack>
-          ))}
-        </SimpleGrid>
-      </Container>
-    </Box>
-  );
-}
-
-function ContentCard({ props }) {
+function ContentCard(props ) {
   const { author, title, images, description } = props
   return (
     <Card maxW='5/6' p={14} m={20}>
@@ -219,7 +179,27 @@ function showContentCards(data) {
 }
 
 function CourseDetail() {
+
+
   const { id } = useParams()
+  const { active, account, activate } = useWeb3React()
+  const coursesContract = useCourses()
+  const [courseDetail, setCourseDetail] = useState([])
+  const data=[]
+
+
+  const getCourseDetail = useCallback(async () => {
+    if (coursesContract) {
+      const res = await coursesContract?.methods?.getCourseDetail(id).call()
+      setCourseDetail(res)
+      console.log(res)
+    }
+  }, [coursesContract])
+  useEffect(() => {
+
+    getCourseDetail()
+  }, [active])
+
   function getItem(id) {
     const res = data.filter(item => item.id == id)
     return res[0]
@@ -249,18 +229,15 @@ function CourseDetail() {
 
   return (
     <>
-      {getItem(id) ?
+      {courseDetail ?
         <>
-          <Image source={getItem(id).images[0]}></Image>
-          <ContentCard props={getItem(id)} />
-          <Heading>More content about {getItem(id).author}</Heading>
-          {getItemsByAuthor(getItem(id).author, id) != 0 ? showContentCards(getItemsByAuthor(getItem(id).author, id)) : <NoMoreContentbyAuthor />}
-          <Heading>Related content</Heading>
-          {data ? showContentCards(getRandomItemsExceptCurrent(id))
-            :
-            <Heading as="h2" size="lg" mt={6} mb={2}>
-              There are no content available
-            </Heading>}
+          <Image source={''}></Image>
+          <ContentCard 
+          author={courseDetail.author} 
+          title={courseDetail.title}
+          images= {''}
+          description={courseDetail.description}/>
+
         </>
         : <RenderNotFound />}
     </>

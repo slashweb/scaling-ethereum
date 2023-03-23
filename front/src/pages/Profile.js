@@ -29,6 +29,7 @@ import {
   FormControl,
   FormLabel,
   Textarea,
+  Alert,
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { BsPerson } from 'react-icons/bs';
@@ -250,10 +251,22 @@ function MyContent() {
   const coursesContract = useCourses()
 
   const createCourse = useCallback(async (title, description, price) => {
-    setIsLoading(true)
+
     if (coursesContract) {
+      setIsLoading(true)
       const res = await coursesContract?.methods?.createNewContent(title,
         description, price, 'url')?.send({ from: account })
+        .catch(e => {
+
+          setIsLoading(false)
+          if (e.code === 4001) {
+            alert('Content not created: your transaction has been canceled')
+
+          } else {
+            alert(e.message)
+          }
+
+        })
       console.log('res', res)
       const res2 = await coursesContract?.methods?.getAllCourses().call()
       console.log('Courses:', res2)
@@ -391,7 +404,7 @@ export default function Profile() {
         <UserStatistics />
       </SocialProfileWithImage>
       <MyContent />
-      {myCourses.length !== 0 ?
+      {myCourses?.length !== 0 ?
         showContentCards(myCourses)
         :
         <NoContentbyAuthor />}
