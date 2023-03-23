@@ -1,318 +1,72 @@
-import {InfoIcon} from '@chakra-ui/icons';
+import { InfoIcon } from '@chakra-ui/icons';
 import {
-    Box,
-    Flex,
-    Stack,
-    Heading,
-    Text,
-    Input,
-    Button,
-    SimpleGrid,
-    Avatar,
-    Center,
-    useColorModeValue,
-    Image,
-    StatLabel,
-    StatNumber,
-    Stat,
-    VStack,
-    Modal,
-    useDisclosure,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    Select,
-    HStack,
-    FormControl,
-    FormLabel,
-    Textarea,
-    Alert,
+  Heading,
+  Center,
+  VStack,
+
 } from '@chakra-ui/react';
-import {useCallback, useEffect, useState} from 'react';
-import {BsPerson} from 'react-icons/bs';
-import {FiServer} from 'react-icons/fi';
-import {useDispatch, useSelector} from 'react-redux';
-import {setHandle, setType} from '../actions/users';
-import wallpaperProfile from '../assets/wallpaperProfile.jpeg'
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import data from '../test/exampleTest';
-import {SimpleProduct} from './MarketPlace';
-import {useWeb3React} from '@web3-react/core';
+import { useWeb3React } from '@web3-react/core';
 import useCourses from '../hooks/useCourses';
-import {Auth} from "@polybase/auth";
+import { Auth } from "@polybase/auth";
 import MyContent from "./Profile/MyContent";
-
-const userExample = {
-    handle: 'John Doe',
-    wallet: '0x3..bb3',
-    subscribers: 8,
-    following: 3,
-    numberOfItems: 2,
-    userType: 'creator',
-    description: 'NFT creator',
-    avatarURL: 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png',
-    balance: '5 ETH',
-    statistics: {
-        likes: 54,
-        sales: 3,
-        inbox: 6,
-    }
-}
-
-function SocialProfileWithImage(props) {
-    const {isOpen, onOpen, onClose} = useDisclosure()
-    const dispatch = useDispatch()
-
-    const handle = useSelector((state) => state.user.handle)
-    const type = useSelector((state) => state.user.type)
-    const [handleForm, setHandleForm] = useState('')
-    const [typeForm, setTypeForm] = useState('')
-    return (
-        <>
-            <Center py={6}>
-                <Box
-                    maxW={'80%'}
-                    w={'full'}
-                    bg={useColorModeValue('white', 'gray.800')}
-                    boxShadow={'2xl'}
-                    rounded={'md'}
-                    pb={10}
-                    overflow={'hidden'}>
-                    <Image
-                        h={'180px'}
-                        w={'full'}
-                        src={
-                            wallpaperProfile
-                        }
-                        objectFit={'cover'}
-                    />
-                    <Flex justify={'center'} mt={-12}>
-                        <Avatar
-                            size={'xl'}
-                            src={userExample.avatarURL ? userExample.avatarURL : 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png'}
-                            alt={'Author'}
-                            css={{
-                                border: '2px solid white',
-                            }}
-                        />
-                    </Flex>
-                    <Box p={6}>
-                        <Stack spacing={0} align={'center'} mb={5}>
-                            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                                {userExample.handle}
-                            </Heading>
-                            <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>{userExample.userType}</Text>
-                            <Text color={'gray.500'}>{userExample.description}</Text>
-                        </Stack>
-                        <Stack direction={'row'} justify={'center'} spacing={6}>
-                            <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{userExample.subscribers}</Text>
-                                <Text fontSize={'sm'} color={'gray.500'}>
-                                    Subscribers
-                                </Text>
-                            </Stack>
-                            <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{userExample.following}</Text>
-                                <Text fontSize={'sm'} color={'gray.500'}>
-                                    Following
-                                </Text>
-                            </Stack>
-                        </Stack>
-                        <Button
-                            w={'2/3'}
-                            mt={8}
-                            bg={useColorModeValue('#151f21', 'gray.900')}
-                            color={'white'}
-                            rounded={'md'}
-                            onClick={onOpen}
-                            _hover={{
-                                transform: 'translateY(-2px)',
-                                boxShadow: 'lg',
-                            }}>
-                            Edit profile
-                        </Button>
-                    </Box>
-                    {props.children}
-                </Box>
-
-            </Center>
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay/>
-                <ModalContent>
-                    <ModalHeader>Editar perfil</ModalHeader>
-                    <ModalCloseButton/>
-                    <ModalBody>
-                        <Text textAlign={'left'} color={'gray.400'}>Handle (Optional)</Text>
-                        <Input fontSize={'xl'} placeholder={'Handle id'} value={handleForm}
-                               onChange={(e) => setHandleForm(e.target.value)}/>
-                        <Text textAlign={'left'} color={'gray.400'}>Choose a type of contributor</Text>
-                        <Select value={typeForm} placeholder='Choose one...'
-                                onChange={(e) => setTypeForm(e.target.value)}>
-                            <option value='creator'>Creator</option>
-                            <option value='user'>User</option>
-                        </Select>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button variant='ghost' mr={3} onClick={onClose}>
-                            Cancelar
-                        </Button>
-                        <Button colorScheme='blue'
-                                onClick={() => {
-                                    dispatch(setHandle(handleForm))
-                                    dispatch(setType(typeForm))
-                                    console.log('Handle: ', handle, 'Type: ', type)
-                                    onClose()
-                                }
-
-
-                                }>Guardar cambios</Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
-    );
-}
-
-
-function StatsCard({title, stat, icon}) {
-    return (
-        <Stat
-            px={{base: 2, md: 4}}
-            py={'5'}
-            shadow={'xl'}
-            border={'1px solid'}
-            borderColor={useColorModeValue('gray.800', 'gray.500')}
-            rounded={'lg'}>
-            <Flex justifyContent={'space-between'}>
-                <Box pl={{base: 2, md: 4}}>
-                    <StatLabel fontWeight={'medium'} isTruncated>
-                        {title}
-                    </StatLabel>
-                    <StatNumber fontSize={'2xl'} fontWeight={'medium'}>
-                        {stat}
-                    </StatNumber>
-                </Box>
-                <Box
-                    my={'auto'}
-                    color={useColorModeValue('gray.800', 'gray.200')}
-                    alignContent={'center'}>
-                    {icon}
-                </Box>
-            </Flex>
-        </Stat>
-    );
-}
-
-function UserStatistics() {
-    return (
-        <Box mx={'auto'} pt={5} px={20}>
-            <SimpleGrid columns={{base: 1, md: 3}} spacing={{base: 5, lg: 8}}>
-                <StatsCard
-                    title={'likes'}
-                    stat={userExample.statistics.likes}
-                    icon={<BsPerson size={'3em'}/>}
-                />
-                <StatsCard
-                    title={'sales'}
-                    stat={userExample.statistics.sales}
-                    icon={<FiServer size={'3em'}/>}
-                />
-                <StatsCard
-                    title={'inbox'}
-                    stat={userExample.statistics.inbox}
-                    icon={<FiServer size={'3em'}/>}
-                />
-            </SimpleGrid>
-        </Box>
-    )
-}
+import SocialProfile from './Profile/SocialProfile';
+import UserStatistics from './Profile/UserStatistics';
+import ShowContentCards from './Profile/ShowContentCards';
 
 function NoContentbyAuthor() {
-    return (
-        <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
-            <VStack>
-                <InfoIcon boxSize={'50px'} color={'blue.500'}/>
-                <Heading as="h2" size="lg" mt={6} mb={2}>
-                    Your profile is empty. Share something to the world!
-                </Heading>
-            </VStack>
-        </Center>
-    )
-}
-
-
-function CustomContent() {
-    const wallet = useSelector((state) => state.user.wallet)
-    const coursesContract = useCourses()
-    const createNewCourse = async newCourse => {
-        const res = await coursesContract?.methods?.createNewContent(newCourse.title, newCourse.description, newCourse.price, 'url')?.send({from: wallet})
-        console.log('res', res)
-    }
-
-    return (
-        <>
-            <MyContent
-                onCreateCourse={(newCourse) => createNewCourse(newCourse)}
-            />
-        </>
-    )
+  return (
+    <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
+      <VStack>
+        <InfoIcon boxSize={'50px'} color={'blue.500'} />
+        <Heading as="h2" size="lg" mt={6} mb={2}>
+          Your profile is empty. Share something to the world!
+        </Heading>
+      </VStack>
+    </Center>
+  )
 }
 
 export default function Profile() {
-    const {active, account, activate} = useWeb3React()
-    const coursesContract = useCourses()
-    const [myCourses, setMyCourses] = useState([])
-    useEffect(() => {
+  const { active, account, activate } = useWeb3React()
+  const coursesContract = useCourses()
+  const [myCourses, setMyCourses] = useState([])
+  const wallet = useSelector((state) => state.user.wallet)
+  const createNewCourse = async newCourse => {
+    const res = await coursesContract?.methods?.createNewContent(newCourse.title, newCourse.description, newCourse.price, 'url')?.send({ from: wallet })
+    console.log('res', res)
+  }
 
-        getItemsByAuthor()
-    }, [active])
-    const getItemsByAuthor = (async () => {
-        // setIsLoading(true)
-        if (coursesContract) {
-            const res = await coursesContract?.methods?.getMyCourses().call({from: account})
-            console.log('Courses:', JSON.stringify(res))
-            //setIsLoading(false)
-            setMyCourses(res)
-        }
-        // setIsLoading(false)
-
-    })
-
-    function showContentCards(data) {
-        console.log('Data', data)
-        return (
-            <SimpleGrid columns={{base: 1, md: 4}} gap='20px' m={12}>
-                {data.map((item, index) => {
-                    return (
-                        <SimpleProduct
-                            key={index}
-                            name={item['title']}
-                            author={item['author']}
-                            bidders={''}
-                            image={'https://unipython.com/wp-content/uploads/2019/09/unipython-curso-programacion-983x777.jpg'}
-                            price={item['price']}
-                            download='#'
-                            id={item['id']}
-                        />
-                    )
-                })}
-            </SimpleGrid>
-        )
+  const getItemsByAuthor = (async () => {
+    // setIsLoading(true)
+    if (coursesContract) {
+      const res = await coursesContract?.methods?.getMyCourses().call({ from: wallet })
+      //setIsLoading(false)
+      setMyCourses(res)
     }
+    // setIsLoading(false)
 
-    return (
-        <>
-            <SocialProfileWithImage>
-                <UserStatistics/>
-            </SocialProfileWithImage>
-            <CustomContent/>
-            {myCourses?.length !== 0 ?
-                showContentCards(myCourses)
-                :
-                <NoContentbyAuthor/>}
-        </>
-    );
+  })
+  useEffect(() => {
+
+    getItemsByAuthor()
+  }, [active])
+
+  return (
+    <>
+      <SocialProfile>
+        <UserStatistics />
+      </SocialProfile>
+      <MyContent
+        onCreateCourse={(newCourse) => createNewCourse(newCourse)}
+      />
+      {myCourses?.length > 0 ?
+        <ShowContentCards courses={myCourses} />
+        :
+        <NoContentbyAuthor />}
+    </>
+  );
 }
 
