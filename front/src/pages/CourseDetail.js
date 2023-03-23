@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-
+import _uniqueId from 'lodash/uniqueId';
 import { AiOutlineSend } from 'react-icons/ai'
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
@@ -30,79 +30,16 @@ import { CheckIcon, InfoIcon } from '@chakra-ui/icons';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { SimpleProduct } from './MarketPlace';
+import { Polybase } from "@polybase/client";
+import { useSelector } from 'react-redux';
+import ContentCard from './CourseDetails.js/ContentCard';
+import { guid } from '../utils';
+import { db } from '../constants';
 
-function ContentCard(props ) {
-  const { author, title, images, description } = props
-  return (
-    <Card maxW='5/6' p={14} m={20}>
-      <CardHeader alignItems={'center'}>
-        <Flex spacing='4' >
-          <Center flex='1' gap='12' >
-            <VStack alignItems={'center'}>
-              <Avatar name={author} src='https://bit.ly/sage-adebayo' size={'xl'} />
-              <Box alignSelf={'center'}>
-                <Heading size='lg' autoCapitalize='true'>{author}</Heading>
-                <Text>Creator</Text>
-              </Box>
-            </VStack>
-          </Center>
-          <IconButton
-            variant='ghost'
-            colorScheme='gray'
-            size={'lg'}
-            aria-label='See menu'
-            icon={<BsThreeDotsVertical />}
-          />
-        </Flex>
-      </CardHeader>
-      <CardBody>
-        <Heading textAlign={'left'}>
-          {title}
-        </Heading>
-        <Text textAlign={'left'}>
-          {description}
-        </Text>
-      </CardBody>
-      <Image
-        objectFit='cover'
-        src={images[0]}
-        alt={title}
-        rounded={'lg'}
-      />
-      <CardFooter
-        justify='space-between'
-        flexWrap='wrap'
-        sx={{
-          '& > button': {
-            minW: '136px',
-          },
-        }}
-      >
-        <Button flex='1' variant='ghost' leftIcon={<BiLike />}>
-          Like
-        </Button>
-        <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
-          Comment
-        </Button>
-        <Button
-          flex='1'
-          color='white'
-          bg={'purple'}
-          fontSize='sm'
-          fontWeight='500'
-          borderRadius='70px'>
-          Place Bid
-        </Button>
-      </CardFooter>
-      <HStack>
-        <Input placeholder='Write a comment' size='lg' borderColor={'gray.300'} />
-        <IconButton>
-          <AiOutlineSend size={'48'} />
-        </IconButton>
-      </HStack>
-    </Card>
-  )
-}
+
+
+
+
 
 function RenderNotFound() {
   return (
@@ -185,8 +122,8 @@ function CourseDetail() {
   const { active, account, activate } = useWeb3React()
   const coursesContract = useCourses()
   const [courseDetail, setCourseDetail] = useState([])
-  const data=[]
-
+  const data = []
+  const wallet = useSelector((state) => state.user.wallet)
 
   const getCourseDetail = useCallback(async () => {
     if (coursesContract) {
@@ -196,7 +133,6 @@ function CourseDetail() {
     }
   }, [coursesContract])
   useEffect(() => {
-
     getCourseDetail()
   }, [active])
 
@@ -226,17 +162,23 @@ function CourseDetail() {
     }
     return randomItems
   }
+  const createNewComment = async comment => {
+
+    const idComment = guid()
+    const res = await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
+    console.log(res)
+  }
+
 
   return (
     <>
       {courseDetail ?
         <>
           <Image source={''}></Image>
-          <ContentCard 
-          author={courseDetail.author} 
-          title={courseDetail.title}
-          images= {''}
-          description={courseDetail.description}/>
+          <ContentCard
+            courseDetail={courseDetail}
+            onCreateComment={comment => { createNewComment(comment) }}
+          />
 
         </>
         : <RenderNotFound />}

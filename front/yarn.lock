@@ -2908,6 +2908,42 @@
   dependencies:
     penpal "^6.2.2"
 
+"@polybase/client@^0.3.37":
+  version "0.3.37"
+  resolved "https://registry.yarnpkg.com/@polybase/client/-/client-0.3.37.tgz#f75c487c150ecc81ed9f2054d6bce5599ccc2904"
+  integrity sha512-6lcRWwjIoTVFptfVhjallM6tuFtrUvWwOgBPK2jHcLjzrDnz4juzQqhGu9NYWFwIPqD4KM7EWmFFq6DukjQAVQ==
+  dependencies:
+    "@polybase/eth" "^0.3.37"
+    "@polybase/polylang" "0.4.7"
+    axios "0.27.2"
+
+"@polybase/eth@^0.3.37":
+  version "0.3.37"
+  resolved "https://registry.yarnpkg.com/@polybase/eth/-/eth-0.3.37.tgz#2ebe92cd5104a88989e2cb44b3f3862a4c0fd75d"
+  integrity sha512-USlXj/Jpg8FUgnRXbeU8GWiqgsBFjpBbSZvVgzq4yBKy+sfTr8hJ/WT0tTOpQdbeYh8vC4Upvd0yo4MlgFfHKw==
+  dependencies:
+    "@ethersproject/keccak256" "^5.7.0"
+    "@ethersproject/strings" "^5.7.0"
+    "@polybase/util" "^0.3.37"
+
+"@polybase/polylang@0.4.7":
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/@polybase/polylang/-/polylang-0.4.7.tgz#aaedb638f7b84e796ecdd4dc8f92a25d3638025b"
+  integrity sha512-hkRAWzpgCLcQyfQd37BPCCtH8rkU4n62FCGJvlH5hEvLkNFxbJ2ijgIoMRWarISn/qPaVsCYWIEsgHqTjifkMg==
+
+"@polybase/util@^0.3.37":
+  version "0.3.37"
+  resolved "https://registry.yarnpkg.com/@polybase/util/-/util-0.3.37.tgz#5ad545efed19f5c44b3e174ee928f99dc3bbab9f"
+  integrity sha512-6BW58u3uIljmkxGFTlgkYgkquKIahvkOUsHAA7a715uCG+0kS20Wh9oJIVSO0d5VrZF1jMPIA6Z1rSdQiveoLQ==
+  dependencies:
+    "@ethersproject/bytes" "^5.7.0"
+    "@ethersproject/signing-key" "^5.7.0"
+    elliptic "^6.5.4"
+    process "^0.11.10"
+    secp256k1 "^4.0.3"
+    tweetnacl "^1.0.3"
+    tweetnacl-util "^0.15.1"
+
 "@popperjs/core@^2.9.3":
   version "2.11.6"
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.6.tgz#cee20bd55e68a1720bdab363ecf0c821ded4cd45"
@@ -4381,6 +4417,14 @@ axe-core@^4.6.2:
   version "4.6.3"
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.6.3.tgz#fc0db6fdb65cc7a80ccf85286d91d64ababa3ece"
   integrity sha512-/BQzOX780JhsxDnPpH4ZiyrJAzcd8AfzFPkv+89veFSr1rcMjuq2JDCwypKaPeB6ljHp9KjXhPpjgCvQlWYuqg==
+
+axios@0.27.2:
+  version "0.27.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
+  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
+  dependencies:
+    follow-redirects "^1.14.9"
+    form-data "^4.0.0"
 
 axios@^1.3.4:
   version "1.3.4"
@@ -8241,7 +8285,7 @@ focus-lock@^0.11.6:
   dependencies:
     tslib "^2.0.3"
 
-follow-redirects@^1.0.0, follow-redirects@^1.15.0:
+follow-redirects@^1.0.0, follow-redirects@^1.14.9, follow-redirects@^1.15.0:
   version "1.15.2"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.2.tgz#b460864144ba63f2681096f274c4e57026da2c13"
   integrity sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==
@@ -13641,7 +13685,7 @@ secp256k1@^3.0.1:
     nan "^2.14.0"
     safe-buffer "^5.1.2"
 
-secp256k1@^4.0.1:
+secp256k1@^4.0.1, secp256k1@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.3.tgz#c4559ecd1b8d3c1827ed2d1b94190d69ce267303"
   integrity sha512-NLZVf+ROMxwtEj3Xa562qgv2BK5e2WNmXPiOdVIPLgs6lyTzMvBq0aWTYMI5XCP9jZMVKOcqZLw/Wc4vDkuxhA==
@@ -14835,7 +14879,7 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tweetnacl-util@^0.15.0:
+tweetnacl-util@^0.15.0, tweetnacl-util@^0.15.1:
   version "0.15.1"
   resolved "https://registry.yarnpkg.com/tweetnacl-util/-/tweetnacl-util-0.15.1.tgz#b80fcdb5c97bcc508be18c44a4be50f022eea00b"
   integrity sha512-RKJBIj8lySrShN4w6i/BonWp2Z/uxwC3h4y7xsRrpP59ZboCd0GpEVsOnMDYLMmKBpYhb5TgHzZXy7wTfYFBRw==
@@ -14850,7 +14894,7 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha512-KXXFFdAbFXY4geFIwoyNK+f5Z1b7swfXABfL7HXCmoIWMKU3dmS26672A4EeQtDzLKy7SXmfBu51JolvEKwtGA==
 
-tweetnacl@^1.0.0:
+tweetnacl@^1.0.0, tweetnacl@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
