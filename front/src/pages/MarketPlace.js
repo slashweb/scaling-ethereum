@@ -8,6 +8,9 @@ import HistoryItem from './marketplace/HistoryItem';
 import { BsFillTrashFill, BsPlayBtnFill } from 'react-icons/bs';
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
+import Swal from 'sweetalert2';
+
+
 export function SimpleProduct(props) {
     const { image, name, author, price, bidders, download, currentbid, id } = props;
     return (
@@ -128,7 +131,11 @@ function MarketPlace() {
                 const res = await coursesContract?.methods?.getAllCourses().call()
                 setData(res)
             } catch (e) {
-                alert(e)
+                Swal.fire({
+                    icon: 'error',
+                    title: `Error code: ${e.code}`,
+                    text: `${e.message}`,
+                  })
             }
         }
     }, [coursesContract])

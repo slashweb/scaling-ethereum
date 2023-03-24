@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 import ContentCard from './CourseDetails.js/ContentCard';
 import { guid } from '../utils';
 import { db } from '../constants';
+import Swal from 'sweetalert2';
 
 function RenderNotFound() {
   return (
@@ -108,11 +109,16 @@ function CourseDetail() {
   const getCourseDetail = useCallback(async () => {
     if (coursesContract) {
       try {
-      const res = await coursesContract?.methods?.getCourseDetail(id).call()
-      setCourseDetail(res)
-      } catch(e){
-        alert(e)
+        const res = await coursesContract?.methods?.getCourseDetail(id).call()
+        setCourseDetail(res)
+      } catch (e) {
+        Swal.fire({
+          icon: 'error',
+          title: `Error code: ${e.code}`,
+          text: `${e.message}`,
+        })
       }
+
     }
   }, [coursesContract])
 
@@ -120,15 +126,19 @@ function CourseDetail() {
     // setIsLoading(true)
     if (coursesContract) {
       try {
-      const res = await coursesContract?.methods?.getMyCourses().call({ from: courseDetail.author })
-      //setIsLoading(false)
-      const filteringCurrent = res.filter(item => item.id !== id)
-      setFilteredContent(filteringCurrent)
-      console.log('Informacion filtrada en getItemsByAuthor: ',filteringCurrent)
-    }catch(e){
-      alert(e)
+        const res = await coursesContract?.methods?.getMyCourses().call({ from: courseDetail.author })
+        //setIsLoading(false)
+        const filteringCurrent = res.filter(item => item.id !== id)
+        setFilteredContent(filteringCurrent)
+        console.log('Informacion filtrada en getItemsByAuthor: ', filteringCurrent)
+      } catch (e) {
+        Swal.fire({
+          icon: 'error',
+          title: `Error code: ${e.code}`,
+          text: `${e.message}`,
+        })
+      }
     }
-  }
     // setIsLoading(false)
   }, [coursesContract, active])
 
@@ -137,7 +147,7 @@ function CourseDetail() {
     showComments()
     getItemsByAuthor()
   }, [active])
-  
+
   function getRandomItemsExceptCurrent(currentId) {
     const items = data.filter(item => item => item.id != currentId)
     const randomItems = []
@@ -157,32 +167,47 @@ function CourseDetail() {
   }
   const createNewComment = async comment => {
     const idComment = guid()
-    try{
-    await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
-    showComments()
-    }catch(e){
-      alert(e)
+    try {
+      await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
+      showComments()
+    } catch (e) {
+      Swal.fire({
+        icon: 'error',
+        title: `Error code: ${e.code}`,
+        text: `${e.message}`,
+      })
     }
+    Swal.fire({
+      icon: 'success',
+      title: 'Comment submitted',
+    })
   }
   const showComments = async () => {
-    try{
-    const res = await db.collection("Comments").where("id_post", "==", parseInt(id)).get()
-    //const filteringCurrent = res.data.filter(item => item.data.id_post ==parseInt(id))
-    //console.log('Filtering',filteringCurrent)
-    return setStorageComments(res.data.reverse())
-    }catch(e){
-      alert(e)
+    try {
+      const res = await db.collection("Comments").where("id_post", "==", parseInt(id)).get()
+      //const filteringCurrent = res.data.filter(item => item.data.id_post ==parseInt(id))
+      //console.log('Filtering',filteringCurrent)
+      return setStorageComments(res.data.reverse())
+    } catch (e) {
+      Swal.fire({
+        icon: 'error',
+        title: `Error code: ${e.code}`,
+        text: `${e.message}`,
+      })
     }
+
+
   }
+
   return (
     <>
       {courseDetail ?
         <>
           <Image source={''}></Image>
           <ContentCard
-            courseDetail = {courseDetail}
-            onCreateComment = {comment => { createNewComment(comment) }}
-            storageComments = {storageComments}
+            courseDetail={courseDetail}
+            onCreateComment={comment => { createNewComment(comment) }}
+            storageComments={storageComments}
           />
           <Heading>More content about {courseDetail.author}</Heading>
           {/*filteredContent?.length !== 0 ? <ShowContentCards data={filteredContent} /> : <NoMoreContentbyAuthor />*/}

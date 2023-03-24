@@ -9,7 +9,7 @@ import useCourses from '../../hooks/useCourses'
 import { guid } from '../../utils'
 import ShowContentCards from './ShowContentCards'
 import SocialProfile from './SocialProfile'
-import UserStatistics from './UserStatistics'
+import Swal from 'sweetalert2';
 
 function NoContentbyAuthor() {
     return (
@@ -28,7 +28,6 @@ export default function ProfileOtherUsers() {
     const { user } = useParams()
     const navigate = useNavigate();
 
-    const { active } = useWeb3React()
     const coursesContract = useCourses()
     const [myCourses, setMyCourses] = useState([])
     const wallet = useSelector((state) => state.user.wallet)
@@ -37,35 +36,34 @@ export default function ProfileOtherUsers() {
     const [isAlreadyFollowed, setIsAlreadyFollowed] = useState(false)
 
     const verifyFollowing = async () => {
-        try{
-        const res = await db.collection("Favorites")
-            .where("following_user", "==", user)
-            .where("user", "==", wallet).get()
-        console.log(res)
-        if (res.data.length !== 0) {
-            setIsAlreadyFollowed(true)
-            return true
-        } else {
-            setIsAlreadyFollowed(false)
-            return false
-        }
-    }catch(e){
-        alert(e)
-    }
-    }
 
+        const following = await db.collection("Favorites")
+            .where("following_user", "==", user)
+            .get()
+
+
+        const isFollowing = following.data.filter((entity) => entity.data.user === wallet )[0]
+        if ( isFollowing.length === 0) {
+            setIsAlreadyFollowed(false)
+        } else {
+            setIsAlreadyFollowed(true)
+        }
+
+    }
+    //no esta funcionando correctamente... 
     const newFavoriteUser = async () => {
         const idFavorite = guid()
-        verifyFollowing()
-        if (!isAlreadyFollowed) {
-            try {
-                await db.collection("Favorites").create([idFavorite, wallet, user])
-            } catch (e) {
-                alert(e)
-            }
-        }
-        else {
-            alert('This user is already followed by you')
+
+        try {
+            await db.collection("Favorites").create([idFavorite, wallet, user])
+            Swal.fire('Success')
+            verifyFollowing()
+        } catch (e) {
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${e.code}`,
+                text: `${e.message}`,
+            })
         }
     }
     const getFollowersCount = async () => {
@@ -73,7 +71,11 @@ export default function ProfileOtherUsers() {
             const res = await db.collection("Favorites").where("following_user", "==", user).get()
             setFollowersNumber(res.data.length)
         } catch (e) {
-            alert(e)
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${e.code}`,
+                text: `${e.message}`,
+            })
         }
     }
     const getFollowingCount = async () => {
@@ -81,7 +83,11 @@ export default function ProfileOtherUsers() {
             const res = await db.collection("Favorites").where("user", "==", user).get()
             setFollowingNumber(res.data.length)
         } catch (e) {
-            alert(e)
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${e.code}`,
+                text: `${e.message}`,
+            })
         }
     }
 
@@ -93,7 +99,11 @@ export default function ProfileOtherUsers() {
                 //setIsLoading(false)
                 setMyCourses(res)
             } catch (e) {
-                alert(e)
+                Swal.fire({
+                    icon: 'error',
+                    title: `Error code: ${e.code}`,
+                    text: `${e.message}`,
+                })
             }
         }
         // setIsLoading(false)
@@ -102,12 +112,12 @@ export default function ProfileOtherUsers() {
         if (user.toLowerCase() === wallet.toLowerCase()) {
             navigate('/profile')
         } else {
-            console.log('false, wallet/user: ', wallet, user)
+            verifyFollowing()
+            getItemsByAuthor()
+            getFollowersCount()
+            getFollowingCount()
         }
-        getItemsByAuthor()
-        getFollowersCount()
-        getFollowingCount()
-    }, [active])
+    }, [])
 
     return (
         <>

@@ -7,6 +7,7 @@ import { NoSubscribers } from '../Subscribers';
 import { useWeb3React } from '@web3-react/core';
 import { PriceWrapper } from './PriceWrapper';
 import { ProfileCard } from './ProfileCard';
+import Swal from 'sweetalert2'
 
 const exampleSubscriptions = [
     {
@@ -95,7 +96,11 @@ function Subscriptions() {
         const res = await db.collection("Favorites").where("user", "==", wallet).get()
         setFollowingData(res.data)
         }catch(e){
-            alert(e)
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${e.code}`,
+                text: `${e.message}`,
+              })
         }
     }
 

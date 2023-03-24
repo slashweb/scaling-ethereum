@@ -13,6 +13,7 @@ import SocialProfile from './Profile/SocialProfile';
 import UserStatistics from './Profile/UserStatistics';
 import ShowContentCards from './Profile/ShowContentCards';
 import { db } from '../constants';
+import Swal from 'sweetalert2';
 
 function NoContentbyAuthor() {
   return (
@@ -42,7 +43,11 @@ export default function Profile() {
       const res = await coursesContract?.methods?.createNewContent(newCourse.title, newCourse.description, newCourse.price, 'url')?.send({ from: wallet })
       console.log('res', res)
     } catch (err) {
-      alert(err)
+      Swal.fire({
+        icon: 'error',
+        title: `Error code: ${err.code}`,
+        text: `${err.message}`,
+      })
     }
   }
 
@@ -60,10 +65,18 @@ export default function Profile() {
   const getItemsByAuthor = (async () => {
     // setIsLoading(true)
     if (coursesContract) {
+      try {
       const res = await coursesContract?.methods?.getMyCourses().call({ from: wallet })
         //setIsLoading(false)
-        .catch(e => alert(e))
+        
       setMyCourses(res)
+      }catch(e){
+        Swal.fire({
+          icon: 'error',
+          title: `Error code: ${e.code}`,
+          text: `${e.message}`,
+        })
+      }
     }
     // setIsLoading(false)
 

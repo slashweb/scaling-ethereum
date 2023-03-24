@@ -28,7 +28,7 @@ import { Link } from 'react-router-dom';
 
 function CommentCard({ props }) {
   const { author, comment } = props;
-  const time = '24/03/2023'
+  const time = new Date().toLocaleDateString()
   const avatar = ''
   return (
     <Flex
@@ -165,9 +165,19 @@ export default function ContentCard({ courseDetail, onCreateComment, storageComm
           </Button>
         </CardFooter>
         <HStack>
-          <Input value={comment} onChange={(e) => setComment(e.target.value)} placeholder='Write a comment' size='lg' borderColor={'gray.300'} />
+          <Input value={comment} 
+          onChange={(e) => setComment(e.target.value)} 
+          placeholder='Write a comment' size='lg' 
+          onKeyPress={e => {
+            if (e.key === 'Enter') {
+              onCreateComment(comment)
+              setComment('')
+            }
+        }}
+          borderColor={'gray.300'} />
           <IconButton onClick={() => {
             onCreateComment(comment)
+            setComment('')
           }}>
             <AiOutlineSend size={'48'} />
           </IconButton>
