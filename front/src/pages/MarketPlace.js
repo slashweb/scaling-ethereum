@@ -1,17 +1,31 @@
-import React, { useEffect } from 'react'
-import Pagination from "@choc-ui/paginator";
-import { Box, Button, Center, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import React, {useCallback, useEffect, useState} from 'react'
+import {
+    Box,
+    Button,
+    Center,
+    Flex,
+    Heading,
+    HStack,
+    Image,
+    SimpleGrid,
+    Stack,
+    Text,
+    useColorModeValue
+} from '@chakra-ui/react';
 import TopCreatorTable from './marketplace/TopCreatorTable';
-import { Link } from 'react-router-dom'
-import { tableDataTopCreators } from '../test/tableDataTopCreators';
-import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
+import {Link} from 'react-router-dom'
+import {tableDataTopCreators} from '../test/tableDataTopCreators';
+import {tableColumnsTopCreators} from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourses } from '../reducers/courseReducer';
-import { getCourses } from '../actions/courses';
-import { BsFillTrashFill, BsPlayBtnFill } from 'react-icons/bs';
+import {BsFillTrashFill, BsPlayBtnFill} from 'react-icons/bs';
+import {useWeb3React} from '@web3-react/core'
+import useCourses from '../hooks/useCourses';
+import {getFileWithCid} from "../utils";
+import Swal from 'sweetalert2';
+
+
 export function SimpleProduct(props) {
-    const { image, name, author, price, bidders, download, currentbid, id } = props;
+    const {image, name, author, price, bidders, download, currentbid, id} = props;
     return (
         <Center py={4}>
             <Box
@@ -23,7 +37,8 @@ export function SimpleProduct(props) {
                 boxShadow={'2xl'}
                 rounded={'lg'}
                 pos={'relative'}
-                zIndex={1}>
+                zIndex={1}
+            >
                 <Box
                     rounded={'lg'}
                     mt={-12}
@@ -46,6 +61,7 @@ export function SimpleProduct(props) {
                             filter: 'blur(20px)',
                         },
                     }}>
+
                     <Image
                         rounded={'lg'}
                         height={230}
@@ -56,7 +72,7 @@ export function SimpleProduct(props) {
                 </Box>
                 <Stack pt={10} align={'center'}>
                     <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
-                        {author}
+                        {author.length === 42 ? author.substr(0, 3) + '...' + author.substr(author.length - 3, 3) : author}
                     </Text>
                     <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
                         {name}
@@ -67,7 +83,7 @@ export function SimpleProduct(props) {
                         </Text>
                     </Stack>
                     <HStack>
-                        <Link to={`/courses/${id}`} >
+                        <Link to={`/courses/${id}`}>
                             <Flex
                                 py={2}
                                 px={4}
@@ -77,7 +93,8 @@ export function SimpleProduct(props) {
                                 rounded={'lg'}
                                 cursor={'pointer'}
                             >
-                                <Text onClick={()=>window.scrollTo(0, 0)} fontSize={'md'} color={'white'} fontWeight={'semibold'}>
+                                <Text onClick={() => window.scrollTo(0, 0)} fontSize={'md'} color={'white'}
+                                      fontWeight={'semibold'}>
                                     More info
                                 </Text>
 
@@ -89,7 +106,9 @@ export function SimpleProduct(props) {
                                 justifyContent={'space-between'}
                                 roundedBottom={'sm'}
                                 cursor="pointer">
-                                <Button bg={'#406782'} onClick={() => console.log('click in delete item')}><BsPlayBtnFill fontSize={'24px'} color={'white'} /></Button>
+                                <Button bg={'#406782'}
+                                        onClick={() => console.log('click in delete item')}><BsPlayBtnFill
+                                    fontSize={'24px'} color={'white'}/></Button>
                             </Flex>
                         </Link>
                     </HStack>
@@ -120,36 +139,30 @@ export function SimpleProduct(props) {
     );
 }
 
-function PaginationView() {
-    return (
-        <Flex
-            w="full"
-            bg={"gray.400"}
-            _dark={{ bg: "gray.600" }}
-            p={50}
-            alignItems="center"
-            justifyContent="center"
-        >
-            <Pagination
-                defaultCurrent={9}
-                total={500}
-                paginationProps={{ display: "flex" }}
-                pageNeighbours={1}
-                showQuickJumper
-            />
-        </Flex>
-    );
-};
-
 function MarketPlace() {
-    const data = useSelector((state) => state.course.courses)
-    const dispatch = useDispatch()
+    const {active} = useWeb3React()
+    const coursesContract = useCourses()
+    const [data, setData] = useState([])
+    const getCourses = useCallback(async () => {
+        if (coursesContract) {
+            try {
+                const res = await coursesContract?.methods?.getAllCourses().call()
+                setData(res)
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: `Error code: ${e.code}`,
+                    text: `${e.message}`,
+                })
+            }
+        }
+    }, [coursesContract])
     useEffect(() => {
-        dispatch(getCourses())
-    }, [])
+        getCourses()
+    })
     return (
         <>
-            <Box pt={{ base: "80px", md: "80px", xl: "80px" }}>
+            <Box pt={{base: "80px", md: "80px", xl: "80px"}}>
 
                 <Flex flexDirection='row' justifyContent={'space-around'}>
                     <Flex direction='column'>
@@ -157,61 +170,24 @@ function MarketPlace() {
                             mt='45px'
                             mb='20px'
                             justifyContent='space-between'
-                            direction={{ base: "column", md: "row" }}
-                            align={{ base: "start", md: "center" }}>
+                            direction={{base: "column", md: "row"}}
+                            align={{base: "start", md: "center"}}>
                             <Text color={'black'} fontSize='2xl' ms='24px' fontWeight='700'>
-                                Trending NFTs
+                                All content
                             </Text>
-                            <Flex
-                                align='center'
-                                me='20px'
-                                ms={{ base: "24px", md: "0px" }}
-                                mt={{ base: "20px", md: "0px" }}>
-                                <Link
-                                    color={'purple'}
-                                    fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
-                                    to='#art'>
-                                    All
-                                </Link>
-                                <Link
-                                    color={'purple'}
-                                    fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
-                                    to='#art'>
-                                    Art
-                                </Link>
-                                <Link
-                                    color={'purple'}
-                                    fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
-                                    to='#music'>
-                                    Music
-                                </Link>
-                                <Link
-                                    color={'purple'}
-                                    fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
-                                    to='#collectibles'>
-                                    Collectibles
-                                </Link>
-                                <Link color={'purple'} fontWeight='500' to='#sports'>
-                                    Sports
-                                </Link>
-                            </Flex>
                         </Flex>
 
-                        <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
-                            {data.length>0 ? data.map((item, index) => {
+                        <SimpleGrid columns={{base: 1, md: 3}} gap='20px'>
+                            {data.length !== 0 ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
-                                        id={item.id}
+                                        id={item['id']}
                                         key={index}
-                                        name={item.title}
-                                        author={item.author}
-                                        bidders={item.bidders}
-                                        image={item.images[0]}
-                                        price={item.price}
+                                        name={item['title']}
+                                        author={item['author']}
+                                        bidders={''}
+                                        image={getFileWithCid(item.mainImage)}
+                                        price={item['price']}
                                         download='#'
                                     />
                                 )
@@ -220,7 +196,7 @@ function MarketPlace() {
                     </Flex>
                     <Flex
                         flexDirection='column'
-                        gridArea={{ xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3" }}>
+                        gridArea={{xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3"}}>
                         <Box px='0px' mb='20px'>
                             <TopCreatorTable
                                 tableData={tableDataTopCreators}
@@ -229,7 +205,7 @@ function MarketPlace() {
                         </Box>
                         <Box p='0px'>
                             <Flex
-                                align={{ sm: "flex-start", lg: "center" }}
+                                align={{sm: "flex-start", lg: "center"}}
                                 justify='space-between'
                                 w='100%'
                                 px='22px'
@@ -240,15 +216,15 @@ function MarketPlace() {
                                 <Button variant='action'>See all</Button>
                             </Flex>
                             {
-                                data ? data.map((item, index) => {
+                                data.length !== 0 ? data.map((item, index) => {
                                     return (
                                         <HistoryItem
-                                            name={item.title}
+                                            name={item['title']}
                                             date='30s ago'
                                             key={index}
-                                            author={item.author}
-                                            image={item.images[0]}
-                                            price={item.price}
+                                            author={item['author']}
+                                            image={''}
+                                            price={item['price']}
                                         />
                                     )
                                 }) : <Text>No content yet</Text>
@@ -259,7 +235,6 @@ function MarketPlace() {
 
                 </Flex>
             </Box>
-            <PaginationView />
         </>
 
     )
