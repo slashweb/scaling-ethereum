@@ -19,7 +19,7 @@ import {
     Textarea,
 } from "@chakra-ui/react"
 import FilePicker from "chakra-ui-file-picker";
-import {guid, makeStorageClient, renameFile} from "../../utils";
+import {guid, makeStorageClient, renameFile, saveImageToFileCoin} from "../../utils";
 
 export default function MyContent({onCreateCourse}) {
 
@@ -34,6 +34,7 @@ export default function MyContent({onCreateCourse}) {
     const createCourse = () => {
         onCreateCourse({title, description, price})
     }
+
 
 
 
@@ -69,17 +70,7 @@ export default function MyContent({onCreateCourse}) {
                                     <HStack>
                                         <FilePicker
                                             onFileChange={async (fileList) => {
-                                                console.log('list', fileList)
-                                                const file = renameFile(fileList[0], guid())
-
-                                                const client = makeStorageClient()
-                                                const rootcid = await client.put(fileList)
-                                                const info = await client.status(rootcid)
-                                                console.log('info', info)
-                                                const res = await client.get(rootcid)
-                                                const files = await res.files()
-                                                console.log('path', Object.keys(files[0]))
-
+                                                saveImageToFileCoin(fileList)
                                             }}
                                             placeholder={"Content Image"}
                                             clearButtonLabel='browse'

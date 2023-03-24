@@ -2,9 +2,42 @@ import {CHAIN_ID} from "../constants";
 
 export const CoursesArtifact = {
     address: {
-        [CHAIN_ID]: '0x58319FeDc389607D813Ad60B146765979455D188'
+        [CHAIN_ID]: '0x5a56E8b252761689bCE2364F614d3C9D34EF0bb4'
     },
     abi: [
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "title",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "description",
+                    "type": "string"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "price",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "string",
+                    "name": "video",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "mainImage",
+                    "type": "string"
+                }
+            ],
+            "name": "createNewContent",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
         {
             "inputs": [],
             "stateMutability": "nonpayable",
@@ -54,37 +87,14 @@ export const CoursesArtifact = {
                     "internalType": "bool",
                     "name": "deleted",
                     "type": "bool"
+                },
+                {
+                    "internalType": "string",
+                    "name": "mainImage",
+                    "type": "string"
                 }
             ],
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "title",
-                    "type": "string"
-                },
-                {
-                    "internalType": "string",
-                    "name": "description",
-                    "type": "string"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "price",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "string",
-                    "name": "video",
-                    "type": "string"
-                }
-            ],
-            "name": "createNewContent",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -127,6 +137,11 @@ export const CoursesArtifact = {
                             "internalType": "bool",
                             "name": "deleted",
                             "type": "bool"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "mainImage",
+                            "type": "string"
                         }
                     ],
                     "internalType": "struct CreatorsContent.Content[]",
@@ -183,6 +198,11 @@ export const CoursesArtifact = {
                             "internalType": "bool",
                             "name": "deleted",
                             "type": "bool"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "mainImage",
+                            "type": "string"
                         }
                     ],
                     "internalType": "struct CreatorsContent.Content",
@@ -233,6 +253,11 @@ export const CoursesArtifact = {
                             "internalType": "bool",
                             "name": "deleted",
                             "type": "bool"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "mainImage",
+                            "type": "string"
                         }
                     ],
                     "internalType": "struct CreatorsContent.Content[]",

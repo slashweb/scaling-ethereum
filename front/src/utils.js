@@ -15,6 +15,18 @@ export const makeStorageClient = () => {
     return new Web3Storage({token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDQyNTJjMWM2NEViN0RhZDUzNWYyMkQ0M0JEOGU4NTEyQjY3ZWZiM2QiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Nzk2MTA3OTI0OTUsIm5hbWUiOiJzY2FsaW5nLWV0aGVyZXVtIn0._BR2Un4Y6ESyagSkZK5KDOwVYcei9VSGQ4JW2OjCdno'})
 }
 
+export const saveImageToFileCoin = async (files) => {
+    let newFile = []
+
+    newFile[0] = renameFile(files[0], guid())
+    const client = makeStorageClient()
+    const rootcid = await client.put(newFile)
+    const res = await client.get(rootcid)
+    const resFiles = await res.files()
+    console.log('path', resFiles)
+
+}
+
 export const renameFile = (originalFile, newName) => {
     return new File([originalFile], newName, {
         type: originalFile.type,
