@@ -19,25 +19,29 @@ import {
     Textarea,
 } from "@chakra-ui/react"
 import FilePicker from "chakra-ui-file-picker";
-import {guid, makeStorageClient, renameFile, saveImageToFileCoin} from "../../utils";
+import {getFileWithCid, guid, makeStorageClient, renameFile, saveImageToFileCoin} from "../../utils";
 
-export default function MyContent({onCreateCourse}) {
+export default function MyContent({onCreateCourse, courseCreated}) {
 
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const [images, setImages] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [title, setTitle] = useState('')
     const [price, setPrice] = useState(0)
-    const [author, setAuthor] = useState('')
     const [description, setDescription] = useState('')
+    const [mainImage, setMainImage] = useState('')
 
     const createCourse = () => {
-        onCreateCourse({title, description, price})
+        setIsLoading(true)
+        onCreateCourse({title, description, price, mainImage})
     }
 
-
-
-
+    useEffect(() => {
+        if (courseCreated) {
+            alert('nice')
+            setIsLoading(false)
+            onClose()
+        }
+    }, [courseCreated])
     return (
         <>
             <Heading>My Content</Heading>
@@ -48,8 +52,7 @@ export default function MyContent({onCreateCourse}) {
                     <ModalHeader>Create new content</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        <Box
-                            p={8}>
+                        <Box p={8}>
                             <Stack spacing={4}>
                                 <HStack>
                                     <FormControl id="title" isRequired>
@@ -70,7 +73,15 @@ export default function MyContent({onCreateCourse}) {
                                     <HStack>
                                         <FilePicker
                                             onFileChange={async (fileList) => {
-                                                saveImageToFileCoin(fileList)
+                                                setIsLoading(true)
+                                                try {
+                                                    const cid = await saveImageToFileCoin(fileList)
+                                                    setMainImage(cid)
+                                                    setIsLoading(false)
+                                                } catch (err) {
+                                                    alert('There was an error uploading the image')
+                                                    setIsLoading(false)
+                                                }
                                             }}
                                             placeholder={"Content Image"}
                                             clearButtonLabel='browse'
@@ -80,24 +91,6 @@ export default function MyContent({onCreateCourse}) {
                                         />
 
                                     </HStack>
-                                    {
-                                        images.map((tag, index) => {
-                                            return <HStack mt={2} key={index}>
-                                                <Input value={tag} onChange={(e) => {
-                                                    const localTags = [...images]
-                                                    localTags[index] = e.target.value
-                                                    setImages(localTags)
-                                                }}/>
-                                                <Button size={'sm'} colorScheme={'red'} onClick={() => {
-                                                    const localTags = [...images]
-                                                    localTags.splice(index, 1)
-                                                    setImages(localTags)
-                                                }}>
-                                                    Delete
-                                                </Button>
-                                            </HStack>
-                                        })
-                                    }
                                 </FormControl>
                             </Stack>
                         </Box>
@@ -107,10 +100,13 @@ export default function MyContent({onCreateCourse}) {
                         <Button variant='ghost' mr={3} onClick={onClose}>
                             Close
                         </Button>
-                        <Button colorScheme='blue' onClick={() => {
-                            createCourse()
-                        }
-                        }>Create content</Button>
+                        <Button
+                            colorScheme='blue'
+                            isLoading={isLoading}
+                            onClick={createCourse}
+                        >
+                            Create content
+                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

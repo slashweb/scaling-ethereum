@@ -11,8 +11,9 @@ import {
     Image,
 
 } from '@chakra-ui/react';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import wallpaperProfile from '../../assets/wallpaperProfile.jpeg'
+
 const userExample = {
     handle: 'John Doe',
     wallet: '0x3..bb3',
@@ -21,7 +22,7 @@ const userExample = {
     numberOfItems: 2,
     userType: 'creator',
     description: 'NFT creator',
-    avatarURL: 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png',
+    avatarURL: 'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link',
     balance: '5 ETH',
     statistics: {
         likes: 54,
@@ -30,7 +31,7 @@ const userExample = {
     }
 }
 
-export default function SocialProfile( {onNewFavorite, followers, following, isAlreadyFollowed}) {
+export default function SocialProfile({onNewFavorite, followers, following, isAlreadyFollowed}) {
     const handle = useSelector((state) => state.user.handle)
     return (
         <>
@@ -47,14 +48,14 @@ export default function SocialProfile( {onNewFavorite, followers, following, isA
                         h={'180px'}
                         w={'full'}
                         src={
-                            wallpaperProfile
+                            'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link/'
                         }
                         objectFit={'cover'}
                     />
                     <Flex justify={'center'} mt={-12}>
                         <Avatar
                             size={'xl'}
-                            src={userExample.avatarURL ? userExample.avatarURL : 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png'}
+                            src={'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link/'}
                             alt={'Author'}
                             css={{
                                 border: '2px solid white',

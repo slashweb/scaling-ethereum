@@ -21,9 +21,10 @@ import {
     Select,
 
 } from '@chakra-ui/react';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import {useState} from 'react';
+import {useSelector} from 'react-redux';
 import wallpaperProfile from '../../assets/wallpaperProfile.jpeg'
+
 const userExample = {
     handle: 'John Doe',
     wallet: '0x3..bb3',
@@ -42,8 +43,8 @@ const userExample = {
 }
 
 export default function SocialProfile(props) {
-    const {followersNumber, followingNumber}= props
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const {followersNumber, followingNumber} = props
+    const {isOpen, onOpen, onClose} = useDisclosure()
     //const dispatch = useDispatch()
 
     const handle = useSelector((state) => state.user.handle)
@@ -64,15 +65,13 @@ export default function SocialProfile(props) {
                     <Image
                         h={'180px'}
                         w={'full'}
-                        src={
-                            wallpaperProfile
-                        }
+                        src={ wallpaperProfile }
                         objectFit={'cover'}
                     />
                     <Flex justify={'center'} mt={-12}>
                         <Avatar
                             size={'xl'}
-                            src={userExample.avatarURL ? userExample.avatarURL : 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png'}
+                            src={'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link/'}
                             alt={'Author'}
                             css={{
                                 border: '2px solid white',
@@ -126,17 +125,17 @@ export default function SocialProfile(props) {
 
             </Center>
             <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
+                <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>Editar perfil</ModalHeader>
-                    <ModalCloseButton />
+                    <ModalCloseButton/>
                     <ModalBody>
                         <Text textAlign={'left'} color={'gray.400'}>Handle (Optional)</Text>
                         <Input fontSize={'xl'} placeholder={'Handle id'} value={handleForm}
-                            onChange={(e) => setHandleForm(e.target.value)} />
+                               onChange={(e) => setHandleForm(e.target.value)}/>
                         <Text textAlign={'left'} color={'gray.400'}>Choose a type of contributor</Text>
                         <Select value={typeForm} placeholder='Choose one...'
-                            onChange={(e) => setTypeForm(e.target.value)}>
+                                onChange={(e) => setTypeForm(e.target.value)}>
                             <option value='creator'>Creator</option>
                             <option value='user'>User</option>
                         </Select>
@@ -146,15 +145,15 @@ export default function SocialProfile(props) {
                             Cancelar
                         </Button>
                         <Button colorScheme='blue'
-                            onClick={() => {
-                                //dispatch(setHandle(handleForm))
-                               // dispatch(setType(typeForm))
-                                console.log('Handle: ', handle, 'Type: ', type)
-                                onClose()
-                            }
+                                onClick={() => {
+                                    //dispatch(setHandle(handleForm))
+                                    // dispatch(setType(typeForm))
+                                    console.log('Handle: ', handle, 'Type: ', type)
+                                    onClose()
+                                }
 
 
-                            }>Guardar cambios</Button>
+                                }>Guardar cambios</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

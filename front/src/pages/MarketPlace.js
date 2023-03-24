@@ -1,15 +1,29 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { Box, Button, Center, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import React, {useCallback, useEffect, useState} from 'react'
+import {
+    Box,
+    Button,
+    Center,
+    Flex,
+    Heading,
+    HStack,
+    Image,
+    SimpleGrid,
+    Stack,
+    Text,
+    useColorModeValue
+} from '@chakra-ui/react';
 import TopCreatorTable from './marketplace/TopCreatorTable';
-import { Link } from 'react-router-dom'
-import { tableDataTopCreators } from '../test/tableDataTopCreators';
-import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
+import {Link} from 'react-router-dom'
+import {tableDataTopCreators} from '../test/tableDataTopCreators';
+import {tableColumnsTopCreators} from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
-import { BsFillTrashFill, BsPlayBtnFill } from 'react-icons/bs';
-import { useWeb3React } from '@web3-react/core'
+import {BsFillTrashFill, BsPlayBtnFill} from 'react-icons/bs';
+import {useWeb3React} from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
+import {getFileWithCid} from "../utils";
+
 export function SimpleProduct(props) {
-    const { image, name, author, price, bidders, download, currentbid, id } = props;
+    const {image, name, author, price, bidders, download, currentbid, id} = props;
     return (
         <Center py={4}>
             <Box
@@ -44,6 +58,7 @@ export function SimpleProduct(props) {
                             filter: 'blur(20px)',
                         },
                     }}>
+
                     <Image
                         rounded={'lg'}
                         height={230}
@@ -65,7 +80,7 @@ export function SimpleProduct(props) {
                         </Text>
                     </Stack>
                     <HStack>
-                        <Link to={`/courses/${id}`} >
+                        <Link to={`/courses/${id}`}>
                             <Flex
                                 py={2}
                                 px={4}
@@ -75,7 +90,8 @@ export function SimpleProduct(props) {
                                 rounded={'lg'}
                                 cursor={'pointer'}
                             >
-                                <Text onClick={() => window.scrollTo(0, 0)} fontSize={'md'} color={'white'} fontWeight={'semibold'}>
+                                <Text onClick={() => window.scrollTo(0, 0)} fontSize={'md'} color={'white'}
+                                      fontWeight={'semibold'}>
                                     More info
                                 </Text>
 
@@ -87,7 +103,9 @@ export function SimpleProduct(props) {
                                 justifyContent={'space-between'}
                                 roundedBottom={'sm'}
                                 cursor="pointer">
-                                <Button bg={'#406782'} onClick={() => console.log('click in delete item')}><BsPlayBtnFill fontSize={'24px'} color={'white'} /></Button>
+                                <Button bg={'#406782'}
+                                        onClick={() => console.log('click in delete item')}><BsPlayBtnFill
+                                    fontSize={'24px'} color={'white'}/></Button>
                             </Flex>
                         </Link>
                     </HStack>
@@ -119,7 +137,7 @@ export function SimpleProduct(props) {
 }
 
 function MarketPlace() {
-    const { active } = useWeb3React()
+    const {active} = useWeb3React()
     const coursesContract = useCourses()
     const [data, setData] = useState([])
     const getCourses = useCallback(async () => {
@@ -138,7 +156,7 @@ function MarketPlace() {
     }, [active])
     return (
         <>
-            <Box pt={{ base: "80px", md: "80px", xl: "80px" }}>
+            <Box pt={{base: "80px", md: "80px", xl: "80px"}}>
 
                 <Flex flexDirection='row' justifyContent={'space-around'}>
                     <Flex direction='column'>
@@ -146,41 +164,41 @@ function MarketPlace() {
                             mt='45px'
                             mb='20px'
                             justifyContent='space-between'
-                            direction={{ base: "column", md: "row" }}
-                            align={{ base: "start", md: "center" }}>
+                            direction={{base: "column", md: "row"}}
+                            align={{base: "start", md: "center"}}>
                             <Text color={'black'} fontSize='2xl' ms='24px' fontWeight='700'>
                                 Trending NFTs
                             </Text>
                             <Flex
                                 align='center'
                                 me='20px'
-                                ms={{ base: "24px", md: "0px" }}
-                                mt={{ base: "20px", md: "0px" }}>
+                                ms={{base: "24px", md: "0px"}}
+                                mt={{base: "20px", md: "0px"}}>
                                 <Link
                                     color={'purple'}
                                     fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
+                                    me={{base: "34px", md: "44px"}}
                                     to='#art'>
                                     All
                                 </Link>
                                 <Link
                                     color={'purple'}
                                     fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
+                                    me={{base: "34px", md: "44px"}}
                                     to='#art'>
                                     Art
                                 </Link>
                                 <Link
                                     color={'purple'}
                                     fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
+                                    me={{base: "34px", md: "44px"}}
                                     to='#music'>
                                     Music
                                 </Link>
                                 <Link
                                     color={'purple'}
                                     fontWeight='500'
-                                    me={{ base: "34px", md: "44px" }}
+                                    me={{base: "34px", md: "44px"}}
                                     to='#collectibles'>
                                     Collectibles
                                 </Link>
@@ -190,7 +208,7 @@ function MarketPlace() {
                             </Flex>
                         </Flex>
 
-                        <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
+                        <SimpleGrid columns={{base: 1, md: 3}} gap='20px'>
                             {data.length !== 0 ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
@@ -209,7 +227,7 @@ function MarketPlace() {
                     </Flex>
                     <Flex
                         flexDirection='column'
-                        gridArea={{ xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3" }}>
+                        gridArea={{xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3"}}>
                         <Box px='0px' mb='20px'>
                             <TopCreatorTable
                                 tableData={tableDataTopCreators}
@@ -218,7 +236,7 @@ function MarketPlace() {
                         </Box>
                         <Box p='0px'>
                             <Flex
-                                align={{ sm: "flex-start", lg: "center" }}
+                                align={{sm: "flex-start", lg: "center"}}
                                 justify='space-between'
                                 w='100%'
                                 px='22px'
