@@ -13,7 +13,6 @@ export default function HistoryItem(props) {
     { bg: "white", boxShadow: "0px 40px 58px -20px rgba(112, 144, 176, 0.12)" },
     { bg: "navy.700", boxShadow: "unset" }
   );
-  const textColorDate = useColorModeValue("secondaryGray.600", "white");
   return (
     <Box
       _hover={bgItem}
@@ -46,7 +45,7 @@ export default function HistoryItem(props) {
               }}
               fontWeight='400'
               me='14px'>
-              {author}
+              {author.length === 42 ? author.substr(0, 3) + '...' + author.substr(author.length - 3, 3) : author}
             </Text>
           </Flex>
           <Flex
@@ -57,7 +56,7 @@ export default function HistoryItem(props) {
               {price}
             </Text>
           </Flex>
-          <Text ms='auto' fontWeight='700' fontSize='sm' color={textColorDate}>
+          <Text ms='auto' fontWeight='500' fontSize='xs' color={'gray.600'} ml={3}>
             {date}
           </Text>
         </Flex>

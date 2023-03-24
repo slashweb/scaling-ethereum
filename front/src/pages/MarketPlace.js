@@ -223,7 +223,7 @@ function MarketPlace() {
                                             date='30s ago'
                                             key={index}
                                             author={item['author']}
-                                            image={''}
+                                            image={getFileWithCid(item.mainImage)}
                                             price={item['price']}
                                         />
                                     )

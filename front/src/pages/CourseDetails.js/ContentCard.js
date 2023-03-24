@@ -97,7 +97,7 @@ function CommentCard({props}) {
 
 
 export default function ContentCard({courseDetail, onCreateComment, storageComments}) {
-    const {author, title, description, video} = courseDetail
+    const {author, title, description, video, mainImage} = courseDetail
     const [comment, setComment] = useState('')
 
     useEffect(() => {
@@ -137,8 +137,7 @@ export default function ContentCard({courseDetail, onCreateComment, storageComme
                     </Text>
                 </CardBody>
                 <Image
-                    objectFit='cover'
-                    src={''}
+                    src={getFileWithCid(mainImage)}
                     alt={title}
                     rounded={'lg'}
                 />
