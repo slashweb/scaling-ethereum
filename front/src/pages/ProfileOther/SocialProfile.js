@@ -30,11 +30,8 @@ const userExample = {
     }
 }
 
-export default function SocialProfile( {onNewFavorite, followers, following}) {
+export default function SocialProfile( {onNewFavorite, followers, following, isAlreadyFollowed}) {
     const handle = useSelector((state) => state.user.handle)
-    const newFavorite=()=>{
-        onNewFavorite()
-    }
     return (
         <>
             <Center py={6}>
@@ -98,6 +95,7 @@ export default function SocialProfile( {onNewFavorite, followers, following}) {
                             bg={useColorModeValue('#151f21', 'gray.900')}
                             color={'white'}
                             rounded={'md'}
+                            isDisabled={isAlreadyFollowed}
                             onClick={onNewFavorite}
                             _hover={{
                                 transform: 'translateY(-2px)',

@@ -1,14 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import Pagination from "@choc-ui/paginator";
 import { Box, Button, Center, Flex, Heading, HStack, Image, SimpleGrid, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import TopCreatorTable from './marketplace/TopCreatorTable';
 import { Link } from 'react-router-dom'
 import { tableDataTopCreators } from '../test/tableDataTopCreators';
 import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourses } from '../reducers/courseReducer';
-import { getCourses } from '../actions/courses';
 import { BsFillTrashFill, BsPlayBtnFill } from 'react-icons/bs';
 import { useWeb3React } from '@web3-react/core'
 import useCourses from '../hooks/useCourses';
@@ -58,7 +54,7 @@ export function SimpleProduct(props) {
                 </Box>
                 <Stack pt={10} align={'center'}>
                     <Text color={'gray.500'} fontSize={'sm'} textTransform={'uppercase'}>
-                        {author.length===42?author.substr(0, 3) + '...' + author.substr(author.length - 3, 3):author}
+                        {author.length === 42 ? author.substr(0, 3) + '...' + author.substr(author.length - 3, 3) : author}
                     </Text>
                     <Heading fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
                         {name}
@@ -79,7 +75,7 @@ export function SimpleProduct(props) {
                                 rounded={'lg'}
                                 cursor={'pointer'}
                             >
-                                <Text onClick={()=>window.scrollTo(0, 0)} fontSize={'md'} color={'white'} fontWeight={'semibold'}>
+                                <Text onClick={() => window.scrollTo(0, 0)} fontSize={'md'} color={'white'} fontWeight={'semibold'}>
                                     More info
                                 </Text>
 
@@ -122,43 +118,23 @@ export function SimpleProduct(props) {
     );
 }
 
-function PaginationView() {
-    return (
-        <Flex
-            w="full"
-            bg={"gray.400"}
-            _dark={{ bg: "gray.600" }}
-            p={50}
-            alignItems="center"
-            justifyContent="center"
-        >
-            <Pagination
-                defaultCurrent={9}
-                total={500}
-                paginationProps={{ display: "flex" }}
-                pageNeighbours={1}
-                showQuickJumper
-            />
-        </Flex>
-    );
-};
 function MarketPlace() {
-    const { active, account, activate } = useWeb3React()
+    const { active } = useWeb3React()
     const coursesContract = useCourses()
-    const [data, setData]= useState([])
+    const [data, setData] = useState([])
     const getCourses = useCallback(async () => {
         if (coursesContract) {
-          const res = await coursesContract?.methods?.getAllCourses().call()
-          .catch(e=>{
-            alert(e.message, e.code)
-          })
-          setData(res)
-          console.log(res)
+            try {
+                const res = await coursesContract?.methods?.getAllCourses().call()
+                setData(res)
+            } catch (e) {
+                alert(e)
+            }
         }
-      }, [coursesContract])
+    }, [coursesContract])
     useEffect(() => {
-        
-          getCourses()
+
+        getCourses()
     }, [active])
     return (
         <>
@@ -215,7 +191,7 @@ function MarketPlace() {
                         </Flex>
 
                         <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
-                            {data.length!== 0 ? data.map((item, index) => {
+                            {data.length !== 0 ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
                                         id={item['id']}
@@ -253,7 +229,7 @@ function MarketPlace() {
                                 <Button variant='action'>See all</Button>
                             </Flex>
                             {
-                                data.length!== 0 ? data.map((item, index) => {
+                                data.length !== 0 ? data.map((item, index) => {
                                     return (
                                         <HistoryItem
                                             name={item['title']}

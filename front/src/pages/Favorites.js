@@ -1,11 +1,13 @@
 import { InfoIcon } from '@chakra-ui/icons'
 import { Button, Center, Heading, HStack, Input, InputGroup, InputRightElement, Select, SimpleGrid, Text, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { db } from '../constants'
 import data from '../test/exampleTest'
 import { guid } from '../utils'
 import { SimpleProduct } from './MarketPlace'
+import { useWeb3React } from '@web3-react/core';
+import { ProfileCard } from './Subscriptions/ProfileCard'
 function NoFavorites() {
   return (
     <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
@@ -18,73 +20,64 @@ function NoFavorites() {
     </Center>
   )
 }
-function NotFound(props) {
-  const { search, criteria } = props
+
+function NoFollowing() {
   return (
-    <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
+    <Center textAlign="center" py={10} px={10} mx={20} m={12} bg={'white'} rounded={'lg'}>
       <VStack>
         <InfoIcon boxSize={'50px'} color={'blue.500'} />
         <Heading as="h2" size="lg" mt={6} mb={2}>
-
-          Content not found with '{search}' as a {criteria}. Check your spelling or use other terms
+          You aren't following users. Follow your favorite creators to get notifications about their activities.
         </Heading>
       </VStack>
     </Center>
   )
 }
+
 function Favorites() {
-  const [search, setSearch] = useState('')
-  const [criteria, setCriteria] = useState('')
   const favoriteContent = data.filter((item) => item.liked === true)
   const [results, setResults] = useState(favoriteContent)
+  const { active } = useWeb3React()
+  const [followingData, setFollowingData] = useState(0)
   const wallet = useSelector((state) => state.user.wallet)
 
-  const newFavoriteUser=async()=>{
-    const idFavorite= guid()
-    const res = await db.collection("Favorites").create([idFavorite, wallet, '0x2fa4565D6d1E3aC132C592E32DB9a960EDAA06dF'])
-    .catch(e=>alert(e))
-    console.log(res)
-  }
-
-  const searchBar = (e) => {
-    setSearch(e.target.value)
-  }
-  //funcion para filtrar
-  function SearchFunction() {
-
-    if (!search || !criteria || criteria === 'all') {
-      setResults(favoriteContent)
-
-    } else {
-      setResults(favoriteContent.filter((dato) =>
-        dato[criteria] === search))
+  const getFollowing = async () => {
+    try {
+      const res = await db.collection("Favorites").where("user", "==", wallet).get()
+      setFollowingData(res.data)
+    } catch (e) {
+      alert(e)
     }
   }
+
+  useEffect(() => {
+    getFollowing()
+  }, [active])
+
   return (
     <>
-      <HStack bg={'white'} p={5}>
-        <Select w={'1/4'} value={criteria} placeholder='Choose one...' onChange={(e) => setCriteria(e.target.value)}>
-          <option value='all'>Show All</option>
-          <option value='author'>Author</option>
-          <option value='title'>Title</option>
-        </Select>
-        <InputGroup>
-          <Input type="text" disabled={!criteria || criteria === 'all'}
-            value={search} onChange={searchBar}
-            onKeyPress={e => {
-              if (e.key === 'Enter') {
-                SearchFunction()
-              }
-            }}
-            placeholder='Write a term for search' />
-          <InputRightElement width='1/5'>
-            <Button bg={'darkblue'} color={'white'} size='md' onClick={SearchFunction}>
-              Search
-            </Button>
-          </InputRightElement>
-        </InputGroup></HStack>
       <Heading mt={10}>My favorite users</Heading>
-      <Button onClick={()=>newFavoriteUser()}>Dar favorito a victor</Button>
+
+      {followingData.length > 0 ?
+        <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
+          {followingData.map((item, index) => {
+            return (
+              <React.Fragment key={index}>
+                <ProfileCard
+                  handle={''}
+                  wallet={item.data.following_user}
+                  userType={''}
+                  description={''}
+                  avatarURL={''}
+                  plan={'No subscription'}
+                />
+              </React.Fragment>
+            )
+          })}
+        </SimpleGrid>
+        :
+        <NoFollowing />}
+
       <Heading mt={10}>My favorite content</Heading>
       {results.length > 0 ?
         <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
@@ -105,10 +98,8 @@ function Favorites() {
             )
           })}
         </SimpleGrid>
-        : favoriteContent.length > 0 ?
-          <NotFound search={search} criteria={criteria} />
-          :
-          <NoFavorites />}
+        :
+        <NoFavorites />}
     </>
   )
 }
