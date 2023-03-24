@@ -44,7 +44,7 @@ const exampleSubscribers = [{
 }
 
 ]
-function SocialProfile(props) {
+export function SocialProfile(props) {
     const { key, handle, wallet, userType, description, avatarURL, plan } = props
     return (
         <Center py={6} key={key}>
@@ -106,7 +106,7 @@ function SocialProfile(props) {
     );
 }
 
-function NoSubscribers() {
+export function NoSubscribers() {
     return (
         <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
             <VStack>

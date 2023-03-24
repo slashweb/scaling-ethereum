@@ -96,7 +96,6 @@ function ShowContentCards(data) {
 }
 
 function CourseDetail() {
-
   const { id } = useParams()
   const { active, account, activate } = useWeb3React()
   const coursesContract = useCourses()
@@ -108,21 +107,28 @@ function CourseDetail() {
 
   const getCourseDetail = useCallback(async () => {
     if (coursesContract) {
+      try {
       const res = await coursesContract?.methods?.getCourseDetail(id).call()
       setCourseDetail(res)
-
+      } catch(e){
+        alert(e)
+      }
     }
   }, [coursesContract])
 
   const getItemsByAuthor = useCallback(async () => {
     // setIsLoading(true)
     if (coursesContract) {
+      try {
       const res = await coursesContract?.methods?.getMyCourses().call({ from: courseDetail.author })
       //setIsLoading(false)
       const filteringCurrent = res.filter(item => item.id !== id)
       setFilteredContent(filteringCurrent)
-      console.log(filteringCurrent)
+      console.log('Informacion filtrada en getItemsByAuthor: ',filteringCurrent)
+    }catch(e){
+      alert(e)
     }
+  }
     // setIsLoading(false)
   }, [coursesContract, active])
 
@@ -151,15 +157,22 @@ function CourseDetail() {
   }
   const createNewComment = async comment => {
     const idComment = guid()
-    const res = await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
+    try{
+    await db.collection("Comments").create([idComment, parseInt(id), wallet, comment])
     showComments()
+    }catch(e){
+      alert(e)
+    }
   }
   const showComments = async () => {
+    try{
     const res = await db.collection("Comments").where("id_post", "==", parseInt(id)).get()
-    console.log('Comments almacenados',res.data)
     //const filteringCurrent = res.data.filter(item => item.data.id_post ==parseInt(id))
     //console.log('Filtering',filteringCurrent)
     return setStorageComments(res.data.reverse())
+    }catch(e){
+      alert(e)
+    }
   }
   return (
     <>

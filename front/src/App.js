@@ -8,13 +8,10 @@ import Profile from './pages/Profile';
 import { Layout } from './layout/Layout';
 import Favorites from './pages/Favorites';
 import Notifications from './pages/Notifications';
-import Subscriptions from './pages/Subscriptions';
+import Subscriptions from './pages/Subscriptions/Subscriptions';
 import Subscribers from './pages/Subscribers';
-import { useSelector } from 'react-redux';
-import PageNotFound from './pages/special/PageNotFound';
-import ProfileOtherUsers from './pages/ProfileOtherUsers';
+import ProfileOtherUsers from './pages/ProfileOther/ProfileOtherUsers';
 function App() {
-  const type= useSelector((state) => state.user.type)
   return (
     <div className="App">
       <Layout>
@@ -28,7 +25,7 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/subscriptions" element={<Subscriptions />} />
-          <Route path="/subscribers" element={type==='creator'?<Subscribers />:<PageNotFound />} />
+          <Route path="/subscribers" element={/*type==='creator'?*/<Subscribers />} />
         </Routes>
       </Layout>
     </div>

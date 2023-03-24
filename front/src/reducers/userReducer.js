@@ -1,4 +1,4 @@
-import { SET_BALANCE, SET_HANDLE, SET_WALLET, SET_TYPE } from "../types/users"
+import { SET_BALANCE, SET_HANDLE, SET_WALLET} from "../types/users"
 
 
 const initialState = {
@@ -14,8 +14,6 @@ export const userReducer = (state = initialState, action) => {
             return { ...state, handle: action.payload }
         case SET_BALANCE:
             return { ...state, balance: action.payload }
-            case SET_TYPE:
-                return { ...state, type: action.payload }
         default:
             return state
     }
