@@ -42,8 +42,8 @@ export default function ProfileOtherUsers() {
             .get()
 
 
-        const isFollowing = following.data.filter((entity) => entity.data.user === wallet )[0]
-        if ( isFollowing.length === 0) {
+        const isFollowing = following.data.filter((entity) => entity.data.user === wallet)[0]
+        if (isFollowing.length === 0) {
             setIsAlreadyFollowed(false)
         } else {
             setIsAlreadyFollowed(true)
@@ -110,7 +110,7 @@ export default function ProfileOtherUsers() {
     })
     useEffect(() => {
         if (user.toLowerCase() === wallet.toLowerCase()) {
-            navigate('/profile')
+            navigate('/profile', { replace: true })
         } else {
             verifyFollowing()
             getItemsByAuthor()
