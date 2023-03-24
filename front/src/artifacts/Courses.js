@@ -2,7 +2,7 @@ import {CHAIN_ID} from "../constants";
 
 export const CoursesArtifact = {
     address: {
-        [CHAIN_ID]: '0x5a56E8b252761689bCE2364F614d3C9D34EF0bb4'
+        [CHAIN_ID]: '0x9B6fC3AAeA08FDCbc2aeBf19E2cF11a8c350a7e6'
     },
     abi: [
         {
@@ -39,9 +39,95 @@ export const CoursesArtifact = {
             "type": "function"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "handle",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "profilePic",
+                    "type": "string"
+                }
+            ],
+            "name": "createNewProfile",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "handle",
+                    "type": "string"
+                }
+            ],
+            "name": "setProfileHandle",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "image",
+                    "type": "string"
+                }
+            ],
+            "name": "setProfileImage",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [],
             "stateMutability": "nonpayable",
             "type": "constructor"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "a",
+                    "type": "string"
+                },
+                {
+                    "internalType": "string",
+                    "name": "b",
+                    "type": "string"
+                }
+            ],
+            "name": "compareStrings",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "pure",
+            "type": "function"
         },
         {
             "inputs": [
@@ -263,6 +349,65 @@ export const CoursesArtifact = {
                     "internalType": "struct CreatorsContent.Content[]",
                     "name": "",
                     "type": "tuple[]"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getMyProfile",
+            "outputs": [
+                {
+                    "components": [
+                        {
+                            "internalType": "string",
+                            "name": "handle",
+                            "type": "string"
+                        },
+                        {
+                            "internalType": "address",
+                            "name": "addr",
+                            "type": "address"
+                        },
+                        {
+                            "internalType": "string",
+                            "name": "profilePic",
+                            "type": "string"
+                        }
+                    ],
+                    "internalType": "struct CreatorsContent.Profile",
+                    "name": "",
+                    "type": "tuple"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "name": "Profiles",
+            "outputs": [
+                {
+                    "internalType": "string",
+                    "name": "handle",
+                    "type": "string"
+                },
+                {
+                    "internalType": "address",
+                    "name": "addr",
+                    "type": "address"
+                },
+                {
+                    "internalType": "string",
+                    "name": "profilePic",
+                    "type": "string"
                 }
             ],
             "stateMutability": "view",

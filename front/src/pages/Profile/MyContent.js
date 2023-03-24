@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect} from 'react'
+import {useState, useEffect} from 'react'
 import {
     useDisclosure,
     Box,
@@ -19,7 +19,8 @@ import {
     Textarea,
 } from "@chakra-ui/react"
 import FilePicker from "chakra-ui-file-picker";
-import {getFileWithCid, guid, makeStorageClient, renameFile, saveImageToFileCoin} from "../../utils";
+import {saveImageToFileCoin} from "../../utils";
+import Swal from "sweetalert2";
 
 export default function MyContent({onCreateCourse, courseCreated}) {
 
@@ -29,15 +30,17 @@ export default function MyContent({onCreateCourse, courseCreated}) {
     const [price, setPrice] = useState(0)
     const [description, setDescription] = useState('')
     const [mainImage, setMainImage] = useState('')
+    const [video, setVideo] = useState('')
+
 
     const createCourse = () => {
         setIsLoading(true)
-        onCreateCourse({title, description, price, mainImage})
+        onCreateCourse({title, description, price, mainImage, video})
     }
 
     useEffect(() => {
         if (courseCreated) {
-            alert('nice')
+            Swal.fire('Content created successfully')
             setIsLoading(false)
             onClose()
         }
@@ -79,19 +82,43 @@ export default function MyContent({onCreateCourse, courseCreated}) {
                                                     setMainImage(cid)
                                                     setIsLoading(false)
                                                 } catch (err) {
-                                                    alert('There was an error uploading the image')
+                                                    Swal.fire('There was an error uploading the image')
                                                     setIsLoading(false)
                                                 }
                                             }}
                                             placeholder={"Content Image"}
                                             clearButtonLabel='browse'
                                             multipleFiles={false}
-                                            accept="image/jpg"
                                             hideClearButton={false}
                                         />
 
                                     </HStack>
                                 </FormControl>
+
+                                <FormControl id="video" isRequired>
+                                    <HStack>
+                                        <FilePicker
+                                            onFileChange={async (fileList) => {
+                                                setIsLoading(true)
+                                                try {
+                                                    const cid = await saveImageToFileCoin(fileList)
+                                                    setVideo(cid)
+                                                    setIsLoading(false)
+                                                } catch (err) {
+                                                    Swal.fire('There was an error uploading the image')
+                                                    setIsLoading(false)
+                                                }
+                                            }}
+                                            placeholder={"Content Video"}
+                                            clearButtonLabel='browse'
+                                            multipleFiles={false}
+                                            accept="video/mp4"
+                                            hideClearButton={false}
+                                        />
+
+                                    </HStack>
+                                </FormControl>
+
                             </Stack>
                         </Box>
                     </ModalBody>

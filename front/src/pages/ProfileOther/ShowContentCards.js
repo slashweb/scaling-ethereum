@@ -1,7 +1,7 @@
 import { SimpleGrid } from "@chakra-ui/react"
 import { SimpleProduct } from "../MarketPlace"
 
-
+import { getFileWithCid } from "../../utils";
 
 export default function ShowContentCards({courses}) {
     return (
@@ -13,7 +13,7 @@ export default function ShowContentCards({courses}) {
               name={item['title']}
               author={item['author']}
               bidders={''}
-              image={'https://unipython.com/wp-content/uploads/2019/09/unipython-curso-programacion-983x777.jpg'}
+              image={getFileWithCid(item.mainImage)}
               price={item['price']}
               download='#'
               id={item['id']}

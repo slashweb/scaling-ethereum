@@ -3,6 +3,7 @@ import {
     Heading,
     Center,
     VStack,
+    Text
 } from '@chakra-ui/react';
 import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
@@ -12,21 +13,8 @@ import MyContent from "./Profile/MyContent";
 import SocialProfile from './Profile/SocialProfile';
 import UserStatistics from './Profile/UserStatistics';
 import ShowContentCards from './Profile/ShowContentCards';
-
-<
-<
-<
-<
-<
-<< HEAD
-    import {db} from '../constants';
-======
-=
 import {db} from '../constants';
 import Swal from 'sweetalert2';
-
->>>>>>>
-b218e819254300eb0e76ab8c338edc10d527644c
 
 function NoContentbyAuthor() {
     return (
@@ -51,6 +39,7 @@ export default function Profile() {
     const [followersData, setFollowersData] = useState(0)
     const [followingData, setFollowingData] = useState(0)
     const [courseCreated, setCourseCreated] = useState(null)
+    const [profile, setProfile] = useState()
 
     const createNewCourse = async newCourse => {
         try {
@@ -58,7 +47,7 @@ export default function Profile() {
                 newCourse.title,
                 newCourse.description,
                 newCourse.price,
-                'url',
+                newCourse.video,
                 newCourse.mainImage
             )?.send({from: wallet})
             setCourseCreated(res)
@@ -91,8 +80,8 @@ export default function Profile() {
         }
         // setIsLoading(false)
     })
-    useEffect(() => {
 
+    useEffect(() => {
         getItemsByAuthor()
         getFollowersCount()
         getFollowingCount()
@@ -104,6 +93,8 @@ export default function Profile() {
                 followersNumber={followersNumber}
                 followingNumber={followingNumber}
             />
+
+
             <MyContent
                 onCreateCourse={(newCourse) => createNewCourse(newCourse)}
                 courseCreated={courseCreated}

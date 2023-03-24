@@ -18,39 +18,66 @@ import {
     ModalCloseButton,
     ModalBody,
     ModalFooter,
-    Select,
-
+    HStack
 } from '@chakra-ui/react';
-import {useState} from 'react';
+import FilePicker from "chakra-ui-file-picker";
+import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import wallpaperProfile from '../../assets/wallpaperProfile.jpeg'
-
-const userExample = {
-    handle: 'John Doe',
-    wallet: '0x3..bb3',
-    subscribers: 8,
-    following: 3,
-    numberOfItems: 2,
-    userType: 'creator',
-    description: 'NFT creator',
-    avatarURL: 'https://exoffender.org/wp-content/uploads/2016/09/empty-profile.png',
-    balance: '5 ETH',
-    statistics: {
-        likes: 54,
-        sales: 3,
-        inbox: 6,
-    }
-}
+import useCourses from "../../hooks/useCourses";
+import Swal from "sweetalert2";
+import {saveImageToFileCoin} from "../../utils";
+import {getFileWithCid} from "../../utils";
 
 export default function SocialProfile(props) {
+    const wallet = useSelector((state) => state.user.wallet)
     const {followersNumber, followingNumber} = props
     const {isOpen, onOpen, onClose} = useDisclosure()
-    //const dispatch = useDispatch()
+    const [handleForm, setHandleForm] = useState()
+    const [profile, setProfile] = useState()
+    const [isLoading, setIsLoading] = useState()
 
-    const handle = useSelector((state) => state.user.handle)
-    const type = useSelector((state) => state.user.type)
-    const [handleForm, setHandleForm] = useState('')
-    const [typeForm, setTypeForm] = useState('')
+
+    const coursesContract = useCourses()
+
+    const getMyProfile = async () => {
+        let res = await coursesContract?.methods?.getMyProfile().call({from: wallet})
+        if (res) {
+            if (!profile) {
+                setProfile(res)
+                setHandleForm(res.handle)
+            }
+        }
+    }
+    const setHandleProfile = async () => {
+        setIsLoading(true)
+        try {
+            await coursesContract?.methods?.setProfileHandle(handleForm).send({from: wallet})
+            await getMyProfile()
+            onClose()
+            Swal.fire('Handle updated successfully')
+        } catch (err) {
+            Swal.fire('Handle cannot updated')
+        }
+        setIsLoading(false)
+    }
+
+    const setProfileImage = async (cid) => {
+        setIsLoading(true)
+        try {
+            await coursesContract?.methods?.setProfileImage(cid).send({from: wallet})
+            await getMyProfile()
+            onClose()
+            await Swal.fire('Profile picture updated successfully')
+        } catch (err) {
+            await Swal.fire('Profile picture cannot updated')
+        }
+        setIsLoading(false)
+    }
+
+    useEffect(() => {
+        getMyProfile()
+    }, [profile])
     return (
         <>
             <Center py={6}>
@@ -65,30 +92,36 @@ export default function SocialProfile(props) {
                     <Image
                         h={'180px'}
                         w={'full'}
-                        src={ wallpaperProfile }
+                        src={wallpaperProfile}
                         objectFit={'cover'}
                     />
                     <Flex justify={'center'} mt={-12}>
-                        <Avatar
-                            size={'xl'}
-                            src={'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link/'}
-                            alt={'Author'}
-                            css={{
-                                border: '2px solid white',
-                            }}
-                        />
+                        {
+                            profile ?
+                                <Avatar
+                                    size={'xl'}
+                                    src={getFileWithCid(profile.profilePic)}
+                                    alt={'Author'}
+                                    css={{
+                                        border: '2px solid white',
+                                    }}
+                                />
+                                : null
+                        }
+
                     </Flex>
                     <Box p={6}>
                         <Stack spacing={0} align={'center'} mb={5}>
-                            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                                {userExample.handle}
+                            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'} mb={10}>
+                                {profile?.handle}
                             </Heading>
-                            <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>{userExample.userType}</Text>
-                            <Text color={'gray.500'}>{userExample.description}</Text>
+                            <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>Content creator</Text>
+                            <br/>
+                            <Text color={'gray.500'}>User profile</Text>
                         </Stack>
                         <Stack direction={'row'} justify={'center'} spacing={6}>
                             <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{userExample.subscribers}</Text>
+                                <Text fontWeight={600}>30</Text>
                                 <Text fontSize={'sm'} color={'gray.500'}>
                                     Subscribers
                                 </Text>
@@ -127,33 +160,47 @@ export default function SocialProfile(props) {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay/>
                 <ModalContent>
-                    <ModalHeader>Editar perfil</ModalHeader>
+                    <ModalHeader>Edit profile</ModalHeader>
                     <ModalCloseButton/>
                     <ModalBody>
-                        <Text textAlign={'left'} color={'gray.400'}>Handle (Optional)</Text>
-                        <Input fontSize={'xl'} placeholder={'Handle id'} value={handleForm}
-                               onChange={(e) => setHandleForm(e.target.value)}/>
-                        <Text textAlign={'left'} color={'gray.400'}>Choose a type of contributor</Text>
-                        <Select value={typeForm} placeholder='Choose one...'
-                                onChange={(e) => setTypeForm(e.target.value)}>
-                            <option value='creator'>Creator</option>
-                            <option value='user'>User</option>
-                        </Select>
+                        <HStack>
+                            <Text textAlign={'left'} color={'gray.400'}>Handle</Text>
+                            <Input fontSize={'xl'}
+                                   placeholder={'Handle id'}
+                                   value={handleForm}
+                                   onChange={(e) => setHandleForm(e.target.value)
+                                   }/>
+                        </HStack>
+                        <HStack mt={8}>
+                            {profile?.profilePic}
+                            <FilePicker
+                                onFileChange={async (fileList) => {
+                                    setIsLoading(true)
+                                    try {
+                                        const cid = await saveImageToFileCoin(fileList)
+                                        setProfileImage(cid)
+                                    } catch (err) {
+                                        Swal.fire('There was an error uploading the image')
+                                        setIsLoading(false)
+                                    }
+                                }}
+                                placeholder={"Profile image"}
+                                clearButtonLabel='browse'
+                                multipleFiles={false}
+                                hideClearButton={false}
+                            />
+                        </HStack>
                     </ModalBody>
                     <ModalFooter>
                         <Button variant='ghost' mr={3} onClick={onClose}>
                             Cancelar
                         </Button>
                         <Button colorScheme='blue'
-                                onClick={() => {
-                                    //dispatch(setHandle(handleForm))
-                                    // dispatch(setType(typeForm))
-                                    console.log('Handle: ', handle, 'Type: ', type)
-                                    onClose()
-                                }
-
-
-                                }>Guardar cambios</Button>
+                                onClick={() => setHandleProfile(handleForm)}
+                                isLoading={isLoading}
+                        >
+                            Save
+                        </Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

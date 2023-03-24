@@ -14,56 +14,63 @@ import {
     MenuDivider,
     Menu,
 } from "@chakra-ui/react";
-import React, { useCallback, useEffect } from 'react'
-import { AiFillHome, AiFillBell, AiOutlineShop } from "react-icons/ai";
-import { BsFillCameraVideoFill, BsPlus } from "react-icons/bs";
-import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'
-import { setBalance, setWallet } from "../actions/users";
-import { useWeb3React } from '@web3-react/core'
-import { connector } from '../config/web3'
-import { Auth } from '@polybase/auth'
-import { Polybase } from '@polybase/client'
-
+import React, {useCallback, useEffect, useState} from 'react'
+import {AiFillHome, AiFillBell, AiOutlineShop} from "react-icons/ai";
+import {BsFillCameraVideoFill, BsPlus} from "react-icons/bs";
+import {Link} from 'react-router-dom';
+import {useSelector, useDispatch} from 'react-redux'
+import {setWallet} from "../actions/users";
+import {Auth} from '@polybase/auth'
 import useCourses from "../hooks/useCourses";
-import Web3 from "web3";
+import {guid} from "../utils";
+import { getFileWithCid } from "../utils";
 
 function Navbar() {
 
     const auth = new Auth()
-    const client = new Polybase();
-
+    const wallet = useSelector((state) => state.user.wallet)
     const coursesContract = useCourses()
+    const type = useSelector((state) => state.user.type)
+    const dispatch = useDispatch()
+    const [balance, setBalance] = useState()
+    const [profile, setProfile] = useState()
 
-    auth.onAuthUpdate((authState) => {
+    const createNewProfile = async () => {
+        const res = await coursesContract?.methods?.createNewProfile(guid(), '').send({from: wallet})
+        if (res) {
+            return await getMyProfile()
+        }
+        return res
+    }
+
+    const getMyProfile = async () => {
+        let res = await coursesContract?.methods?.getMyProfile().call({from: wallet})
+        if (res.addr === '0x0000000000000000000000000000000000000000') {
+            await createNewProfile()
+        }
+        setProfile(res)
+        return res
+    }
+
+    auth.onAuthUpdate(async (authState) => {
         if (authState) {
             const userId = authState.userId
+            await getMyProfile()
             dispatch(setWallet(userId))
         } else {
         }
     })
+
     async function signIn(force) {
-        const res = await auth.signIn({ force });
+        const res = await auth.signIn({force});
     }
 
-    const { active, activate, deactivate, account, library } = useWeb3React();
-    const wallet = useSelector((state) => state.user.wallet)
-    const balance = useSelector((state) => state.user.balance)
-    const type = useSelector((state) => state.user.type)
-    const dispatch = useDispatch()
 
-    const connect = useCallback(async () => {
-        // activate(connector)
-        const authState = await auth.signIn({ force: true })
+    const connect = async () => {
+        const authState = await auth.signIn({force: true})
         const userId = authState.userId
         dispatch(setWallet(userId))
-    }, [activate])
-
-
-    const getBalance = useCallback(async () => {
-        const toSet = await library.eth.getBalance(account)
-        dispatch(setBalance((toSet / 1e18).toFixed(2)))
-    })
+    }
 
     async function disconnectWallet() {
         await auth.signOut()
@@ -72,13 +79,8 @@ function Navbar() {
     }
 
     useEffect(() => {
-        if (active) {
-            dispatch(setWallet(account))
-            getBalance()
-        } else {
-            connect()
-        }
-    }, [active])
+        connect()
+    })
 
     const bg = 'black';
     const mobileNav = useDisclosure();
@@ -87,7 +89,7 @@ function Navbar() {
             <chakra.header
                 bg={bg}
                 w="full"
-                px={{ base: 2, sm: 4 }}
+                px={{base: 2, sm: 4}}
                 py={4}
                 shadow="md"
             >
@@ -96,12 +98,12 @@ function Navbar() {
                         <Link to={'/'}>
                             <Text>Logo</Text>
                         </Link>
-                        <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
+                        <HStack spacing={3} display={{base: "none", md: "inline-flex"}}>
                             <Link to={'/'}>
                                 <Button variant="solid"
-                                    leftIcon={<AiFillHome />}
-                                    colorScheme="brand"
-                                    size="sm">
+                                        leftIcon={<AiFillHome/>}
+                                        colorScheme="brand"
+                                        size="sm">
                                     Home
                                 </Button>
                             </Link>
@@ -109,7 +111,7 @@ function Navbar() {
                                 <Button
                                     variant="solid"
                                     colorScheme="brand"
-                                    leftIcon={<AiOutlineShop />}
+                                    leftIcon={<AiOutlineShop/>}
                                     size="sm"
                                 >
                                     Marketplace
@@ -135,12 +137,12 @@ function Navbar() {
                         <Box
                             p={3}
                             color="gray.800"
-                            _dark={{ color: "inherit" }}
+                            _dark={{color: "inherit"}}
                             rounded="sm"
-                            _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
+                            _hover={{color: "gray.800", _dark: {color: "gray.600"}}}
                         >
                             <Link to={'notifications'}>
-                                <AiFillBell />
+                                <AiFillBell/>
                                 <VisuallyHidden>Notifications</VisuallyHidden>
                             </Link>
                         </Box>
@@ -148,7 +150,7 @@ function Navbar() {
                         <Button
                             variant="solid"
                             size="sm"
-                            leftIcon={wallet ? null : <BsPlus />} onClick={wallet ? disconnectWallet : connect}
+                            leftIcon={wallet ? null : <BsPlus/>} onClick={wallet ? disconnectWallet : connect}
                         >
                             {wallet ? 'Disconnect wallet' : 'Connect wallet'}
                         </Button>
@@ -161,12 +163,19 @@ function Navbar() {
                                         variant={'link'}
                                         cursor={'pointer'}
                                         minW={0}>
-                                        <Avatar
-                                            size={'sm'}
-                                            src={
-                                                'https://bit.ly/dan-abramov'
-                                            }
-                                        />
+                                        {
+                                            profile ?
+
+                                                <Avatar
+                                                    size={'sm'}
+                                                    src={getFileWithCid(profile.profilePic)}
+                                                />
+                                                :
+                                                <Avatar
+                                                    size={'sm'}
+                                                    src={'https://bit.ly/dan-abramov'}
+                                                />
+                                        }
                                     </MenuButton>
                                     <MenuList>
                                         <MenuItem><Link to={'profile'}>Profile</Link></MenuItem>
@@ -175,7 +184,7 @@ function Navbar() {
                                         <MenuItem><Link to={'subscriptions'}>My subscriptions</Link></MenuItem>
                                         {type === 'user' || !type ? null :
                                             <MenuItem><Link to={'subscribers'}>My subscribers</Link></MenuItem>}
-                                        <MenuDivider />
+                                        <MenuDivider/>
                                         <MenuItem>Sign Out</MenuItem>
                                     </MenuList>
                                 </Menu>
