@@ -42,6 +42,7 @@ const userExample = {
 }
 
 export default function SocialProfile(props) {
+    const {followersNumber, followingNumber}= props
     const { isOpen, onOpen, onClose } = useDisclosure()
     //const dispatch = useDispatch()
 
@@ -94,9 +95,15 @@ export default function SocialProfile(props) {
                                 </Text>
                             </Stack>
                             <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{userExample.following}</Text>
+                                <Text fontWeight={600}>{followingNumber}</Text>
                                 <Text fontSize={'sm'} color={'gray.500'}>
                                     Following
+                                </Text>
+                            </Stack>
+                            <Stack spacing={0} align={'center'}>
+                                <Text fontWeight={600}>{followersNumber}</Text>
+                                <Text fontSize={'sm'} color={'gray.500'}>
+                                    Followers
                                 </Text>
                             </Stack>
                         </Stack>
