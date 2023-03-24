@@ -2,8 +2,12 @@
 
 pragma solidity >=0.8.2 <0.9.0;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
+
 contract CreatorsContent {
 
+    // Using counters from zeppeling
+    using Counters for Counters.Counter;
 
     struct Content {
         uint256 id;
@@ -13,14 +17,22 @@ contract CreatorsContent {
         uint256 price;
         string video;
         bool deleted;
+        string mainImage;
+    }
+
+    struct Profile {
+        string handle;
+        address addr;
+        string profilePic;
     }
     
     Content[] public Contents;
-    uint256 idCourses;
+    Profile[] public Profiles;
 
+    Counters.Counter idCourses;
 
     constructor() {
-        idCourses = 0;
+        idCourses.reset();
     }
 
     function getUserCoursesLen(address user) private view returns (uint256) {
@@ -72,9 +84,83 @@ contract CreatorsContent {
         string memory title, 
         string memory description, 
         uint256 price, 
-        string memory video
+        string memory video,
+        string memory mainImage
     ) public {
-        Contents.push(Content(idCourses, msg.sender, title, description, price, video, false));
-        idCourses ++;
+        Contents.push(Content(idCourses.current(), msg.sender, title, description, price, video, false, mainImage));
+        idCourses.increment();
     }
+
+    function compareStrings(string memory a, string memory b) public pure returns (bool) {
+        return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+    }
+
+    function getProfileByAddress(address addr) private view returns (Profile memory) {
+        for (uint256 i=0; i < Profiles.length; i++) {
+            if (Profiles[i].addr == addr) {
+                return Profiles[i];
+            }
+        }
+
+        Profile memory empty;
+
+        return empty;
+    }
+
+    function getProficeIndexByAddress(address addr) private view returns (uint256) {
+        for (uint256 i=0; i < Profiles.length; i++) {
+            if (Profiles[i].addr == addr) {
+                return i;
+            }
+        }
+        // In case that cannot find the account
+        return Profiles.length;
+    }
+
+    function createNewProfile(string memory handle, string memory profilePic) public returns (bool) {
+      
+        for (uint256 i=0; i < Profiles.length; i++) {
+            if (compareStrings(Profiles[i].handle, handle)) {
+                return false;
+            }
+            if (Profiles[i].addr == msg.sender) {
+                return false;
+            }
+        }
+        
+        Profiles.push(Profile(handle, msg.sender, profilePic));
+        return true;
+        
+    }
+
+    function setProfileHandle(string memory handle) public returns (bool) {
+
+        uint256 index = getProficeIndexByAddress(msg.sender);
+
+        for (uint256 i=0; i < Profiles.length; i++) {
+            if (compareStrings(Profiles[i].handle, handle) && i != index) {
+                return false;
+            }
+        }
+
+        Profiles[index].handle = handle;
+        return true;
+    }
+
+    function setProfileImage(string memory image) public returns (bool) {
+
+        uint256 index = getProficeIndexByAddress(msg.sender);
+
+        Profiles[index].profilePic = image;
+
+        return true;
+    }
+
+    function getMyProfile() public view returns (Profile memory) {
+        Profile memory localProfile = getProfileByAddress(msg.sender);
+
+        return localProfile;
+    }
+
+
 } 
