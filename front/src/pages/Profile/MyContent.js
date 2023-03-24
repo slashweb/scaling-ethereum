@@ -19,7 +19,7 @@ import {
     Textarea,
 } from "@chakra-ui/react"
 import FilePicker from "chakra-ui-file-picker";
-import {makeStorageClient} from "../../utils";
+import {guid, makeStorageClient, renameFile} from "../../utils";
 
 export default function MyContent({onCreateCourse}) {
 
@@ -34,6 +34,8 @@ export default function MyContent({onCreateCourse}) {
     const createCourse = () => {
         onCreateCourse({title, description, price})
     }
+
+
 
     return (
         <>
@@ -65,37 +67,26 @@ export default function MyContent({onCreateCourse}) {
 
                                 <FormControl id="pictures" isRequired>
                                     <HStack>
-
-                                        <Input
-                                            placeholder="Select Date and Time"
-                                            size="md"
-                                            type="file"
-                                            onChange={async (e) => {
-                                                const fileList = e.target.files
+                                        <FilePicker
+                                            onFileChange={async (fileList) => {
                                                 console.log('list', fileList)
+                                                const file = renameFile(fileList[0], guid())
+
                                                 const client = makeStorageClient()
-                                                const cid = await client.put(fileList)
-                                                console.log('storage', cid)
-                                                console.log('on file', fileList)
-                                                console.log('the file', await client.get(cid))
-                                            }
-                                            }
+                                                const rootcid = await client.put(fileList)
+                                                const info = await client.status(rootcid)
+                                                console.log('info', info)
+                                                const res = await client.get(rootcid)
+                                                const files = await res.files()
+                                                console.log('path', Object.keys(files[0]))
+
+                                            }}
+                                            placeholder={"Content Image"}
+                                            clearButtonLabel='browse'
+                                            multipleFiles={false}
+                                            accept="image/jpg"
+                                            hideClearButton={false}
                                         />
-                                        {/*<FilePicker*/}
-                                        {/*    onFileChange={ async (fileList) => {*/}
-                                        {/*        console.log('list', fileList[0])*/}
-                                        {/*        const client = makeStorageClient()*/}
-                                        {/*        const cid = await client.put(fileList[0])*/}
-                                        {/*        console.log('storage', cid)*/}
-                                        {/*        console.log('on file', fileList)*/}
-                                        {/*        console.log('the file', await client.get(cid))*/}
-                                        {/*    }}*/}
-                                        {/*    placeholder={"Content Image"}*/}
-                                        {/*    clearButtonLabel='browse'*/}
-                                        {/*    multipleFiles={false}*/}
-                                        {/*    accept="image/jpg"*/}
-                                        {/*    hideClearButton={false}*/}
-                                        {/*/>*/}
 
                                     </HStack>
                                     {
