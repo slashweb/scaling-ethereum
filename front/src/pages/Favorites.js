@@ -8,6 +8,8 @@ import { guid } from '../utils'
 import { SimpleProduct } from './MarketPlace'
 import { useWeb3React } from '@web3-react/core';
 import { ProfileCard } from './Subscriptions/ProfileCard'
+import Swal from 'sweetalert2';
+
 function NoFavorites() {
   return (
     <Center textAlign="center" py={10} px={6} mx={20} m={12} bg={'white'} rounded={'lg'}>
@@ -46,7 +48,11 @@ function Favorites() {
       const res = await db.collection("Favorites").where("user", "==", wallet).get()
       setFollowingData(res.data)
     } catch (e) {
-      alert(e)
+      Swal.fire({
+        icon: 'error',
+        title: `Error code: ${e.code}`,
+        text: `${e.message}`,
+      })
     }
   }
 

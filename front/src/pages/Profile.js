@@ -12,7 +12,21 @@ import MyContent from "./Profile/MyContent";
 import SocialProfile from './Profile/SocialProfile';
 import UserStatistics from './Profile/UserStatistics';
 import ShowContentCards from './Profile/ShowContentCards';
+
+<
+<
+<
+<
+<
+<< HEAD
+    import {db} from '../constants';
+======
+=
 import {db} from '../constants';
+import Swal from 'sweetalert2';
+
+>>>>>>>
+b218e819254300eb0e76ab8c338edc10d527644c
 
 function NoContentbyAuthor() {
     return (
@@ -49,10 +63,13 @@ export default function Profile() {
             )?.send({from: wallet})
             setCourseCreated(res)
         } catch (err) {
-            alert(err)
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${err.code}`,
+                text: `${err.message}`,
+            })
         }
     }
-
     const getFollowersCount = async () => {
         const res = await db.collection("Favorites").where("following_user", "==", wallet).get()
         setFollowersNumber(res.data.length)
@@ -73,7 +90,6 @@ export default function Profile() {
             setMyCourses(res)
         }
         // setIsLoading(false)
-
     })
     useEffect(() => {
 
