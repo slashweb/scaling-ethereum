@@ -92,13 +92,15 @@ export default function Profile() {
             <SocialProfile
                 followersNumber={followersNumber}
                 followingNumber={followingNumber}
-            />
-
-
-            <MyContent
+                >
+                              <MyContent
                 onCreateCourse={(newCourse) => createNewCourse(newCourse)}
                 courseCreated={courseCreated}
             />
+            </SocialProfile>
+
+
+            <Heading>My Content</Heading>
             {myCourses?.length > 0 ?
                 <ShowContentCards courses={myCourses}/>
                 :
