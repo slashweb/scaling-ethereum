@@ -1,12 +1,11 @@
 import { InfoIcon } from '@chakra-ui/icons'
-import { Button, Center, Heading, HStack, Input, InputGroup, InputRightElement, Select, SimpleGrid, Text, VStack } from '@chakra-ui/react'
+import { Center, Heading, SimpleGrid, VStack } from '@chakra-ui/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { db } from '../constants'
 import data from '../test/exampleTest'
-import { getFileWithCid, guid } from '../utils'
+import { getFileWithCid } from '../utils'
 import { SimpleProduct } from './MarketPlace'
-import { useWeb3React } from '@web3-react/core';
 import { ProfileCard } from './Subscriptions/ProfileCard'
 import Swal from 'sweetalert2';
 import useCourses from '../hooks/useCourses'
@@ -44,8 +43,6 @@ function Favorites() {
   const [likedContent, setLikedContent] = useState([])
   const wallet = useSelector((state) => state.user.wallet)
   const coursesContract = useCourses()
-  const [courseDetail, setCourseDetail] = useState([])
-
 
   const getFollowing = async () => {
     try {
@@ -62,10 +59,8 @@ function Favorites() {
   const getLikedContentByUser = async () => {
     try {
       const res = await db.collection("ContentLikes").where("user", "==", wallet).get()
-      setLikedContent(res.data)
-      console.log('Liked content',res.data)
-      //const arr= res.data.map((item,index)=>{getCourseDetail(res.data[index].data.liked_post_id.toString())})
-     // console.log(arr)
+      await setLikedContent(res.data)
+      getFavoriteCourses(res.data.map(item => item.data.liked_post_id))
     } catch (e) {
       Swal.fire({
         icon: 'error',
@@ -74,11 +69,16 @@ function Favorites() {
       })
     }
   }
-  const getCourseDetail = useCallback(async (id) => {
+  const getFavoriteCourses = useCallback(async (ids) => {
     if (coursesContract) {
       try {
-        setCourseDetail(await coursesContract?.methods?.getCourseDetail(id.toString()).call())
-        console.log('Course Detail',courseDetail)
+        let promises = []
+        promises = ids.map((id) => {
+          return coursesContract?.methods?.getCourseDetail(id.toString()).call()
+        })
+        const res = await Promise.all(promises)
+        setResults(res)
+
       } catch (e) {
         Swal.fire({
           icon: 'error',
@@ -87,11 +87,11 @@ function Favorites() {
         })
       }
     }
-  },[coursesContract])
+  }, [coursesContract])
 
   useEffect(() => {
     getLikedContentByUser()
-    getFollowing() 
+    getFollowing()
   }, [])
 
   return (
@@ -120,17 +120,17 @@ function Favorites() {
       <Heading mt={10}>My favorite content</Heading>
       {likedContent?.length > 0 ?
         <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
-          {likedContent.map((item, index) => {
-               // getCourseDetail(item.data.liked_post_id)
+          {results?.map((item, index) => {
+            // getCourseDetail(item.data.liked_post_id)
             return (
               <React.Fragment key={index}>
                 <SimpleProduct
-                  id={item.data.liked_post_id}
+                  id={item.id}
                   key={index}
-                  name={''}
-                  author={''}
+                  name={item.title}
+                  author={item.author}
                   bidders={''}
-                  image={getFileWithCid('')}
+                  image={getFileWithCid(item.mainImage)}
                   price={''}
                   download='#'
                 />

@@ -1,8 +1,5 @@
-import React, { useCallback, useEffect } from 'react'
-import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Button, Avatar, Alert } from "@chakra-ui/react";
-import { useWeb3React } from '@web3-react/core'
-import useCourses from '../hooks/useCourses';
-import { connector } from '../config/web3';
+import React, { useCallback } from 'react'
+import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Avatar } from "@chakra-ui/react";
 import TopCreatorTable from './marketplace/TopCreatorTable';
 import { tableDataTopCreators } from '../test/tableDataTopCreators';
 import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
@@ -425,13 +422,6 @@ function TestimonialCard({ props, index }) {
 }
 
 function Home() {
-    const { active, account, activate } = useWeb3React()
-    const coursesContract = useCourses()
-
-    const connect = useCallback(() => {
-        activate(connector)
-    }, [activate])
-
     return (
         <>
             <Hero1 />

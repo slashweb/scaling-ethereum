@@ -2,7 +2,7 @@ import { Text } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react'
 import { getStEthUsdValue, getUsdEthValue } from "../utils/conversion-coins";
 function Conversion() {
-    let quantity = 9
+    let quantity = 100
     const [stacked, setStacked] = useState()
     const [conversion, setConversion] = useState()
     async function getStacked(balance) {
