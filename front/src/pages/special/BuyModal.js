@@ -16,7 +16,7 @@ import {
     FormLabel,
     Text,
 } from "@chakra-ui/react"
-import { getUsdEthValue } from '../../utils/conversion-coins'
+import { getUsdEthValue, getWei } from '../../utils/conversion-coins'
 import Swal from 'sweetalert2'
 function BuyModal(props) {
     const { title, price, id } = props
@@ -25,11 +25,25 @@ function BuyModal(props) {
 
     const [eth, setEth] = useState()
     const [conversion, setConversion] = useState()
+    const [conversionWei, setConversionWei] = useState()
     async function setDolarEthConversion() {
         try {
             const res = await getUsdEthValue(1)
             setConversion(res)
             getEths(res, parseInt(price))
+        } catch (e) {
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${e.code} in Conversion Eth to Dollar`,
+                text: `${e.message}`,
+            })
+        }
+    }
+    async function setWeiConversion() {
+        try {
+            const res = await getWei(1)
+            setConversionWei(res)
+            
         } catch (e) {
             Swal.fire({
                 icon: 'error',
