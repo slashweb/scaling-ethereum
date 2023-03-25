@@ -2,7 +2,7 @@ import { CHAIN_ID } from "../constants";
 
 export const CoursesArtifact = {
     address: {
-        [CHAIN_ID]: '0xEe14A3c8f54b7B626C5ceB183F0319FD4aACbB2A'
+        [CHAIN_ID]: '0x099B657a3a331866cB196381f2C3C991953Aa45D'
     },
     abi: [
         {

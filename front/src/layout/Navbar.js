@@ -180,6 +180,7 @@ function Navbar() {
                                     <MenuList>
                                         <MenuItem><Link to={'profile'}>Profile</Link></MenuItem>
                                         <MenuItem><Link to={'favorites'}>Favorites</Link></MenuItem>
+                                        <MenuItem><Link to={'payments'}>My Payments</Link></MenuItem>
                                         <MenuItem><Link to={'notifications'}>Notifications</Link></MenuItem>
                                         <MenuItem><Link to={'subscriptions'}>My subscriptions</Link></MenuItem>
                                         {type === 'user' || !type ? null :

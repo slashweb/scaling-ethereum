@@ -11,6 +11,7 @@ import Notifications from './pages/Notifications';
 import Subscriptions from './pages/Subscriptions/Subscriptions';
 import Subscribers from './pages/Subscribers';
 import ProfileOtherUsers from './pages/ProfileOther/ProfileOtherUsers';
+import Payments from './pages/Payments';
 function App() {
   return (
     <div className="App">
@@ -25,7 +26,8 @@ function App() {
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/subscriptions" element={<Subscriptions />} />
-          <Route path="/subscribers" element={/*type==='creator'?*/<Subscribers />} />
+          <Route path="/subscribers" element={<Subscribers />} />
+          <Route path="/payments" element={<Payments />} />
         </Routes>
       </Layout>
     </div>
