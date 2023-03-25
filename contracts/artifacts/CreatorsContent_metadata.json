@@ -7,8 +7,47 @@
 		"abi": [
 			{
 				"inputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "payable",
 				"type": "constructor"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "ContentBuys",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "idContent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ammount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "isPayed",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
 			},
 			{
 				"inputs": [
@@ -96,6 +135,19 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "idCourse",
+						"type": "uint256"
+					}
+				],
+				"name": "buyContent",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "string",
 						"name": "a",
 						"type": "string"
@@ -175,6 +227,19 @@
 				"type": "function"
 			},
 			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "addr",
+						"type": "address"
+					}
+				],
+				"name": "getAllBalanceForCreator",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
 				"inputs": [],
 				"name": "getAllCourses",
 				"outputs": [
@@ -224,6 +289,90 @@
 						"internalType": "struct CreatorsContent.Content[]",
 						"name": "",
 						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getAvailableBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address payable",
+						"name": "addr",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "indexBuy",
+						"type": "uint256"
+					}
+				],
+				"name": "getBalanceForSingleBuy",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getBuysFromAuthor",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "from",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "to",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "idContent",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "ammount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "isPayed",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct CreatorsContent.ContentBuy[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getContractBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -450,11 +599,11 @@
 			]
 		},
 		"contracts/CreatorsContent.sol": {
-			"keccak256": "0xd923f5d5dd4a836315b74b268b98c7b1780432cc70b629a1912ed3c71e1bffc8",
+			"keccak256": "0x1329f59afb9777d095e310f3e16b8f9e9d6e8fc554347dc0762dd2b9fae94896",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://83751207fc20af96ea904a3696d6f291ab274b51690218e606bb18db8f09133b",
-				"dweb:/ipfs/QmZnnmwroqox9vbApE43WNpyiLVGkmsnvKv5gtgUgVn2Ng"
+				"bzz-raw://1b445164bd54a8d2279868c48352c98230c1ee42b7ba823ab30d2104439ab64c",
+				"dweb:/ipfs/Qmc6CLwaoCdqhgcnQfTVUEPPVk3TwUgBPtSPCRr8Whn77t"
 			]
 		}
 	},
