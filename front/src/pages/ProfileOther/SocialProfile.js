@@ -11,27 +11,39 @@ import {
     Image,
 
 } from '@chakra-ui/react';
-import {useSelector} from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import wallpaperProfile from '../../assets/wallpaperProfile.jpeg'
+import useCourses from "../../hooks/useCourses";
+import { getFileWithCid } from '../../utils';
 
-const userExample = {
-    handle: 'John Doe',
-    wallet: '0x3..bb3',
-    subscribers: 8,
-    following: 3,
-    numberOfItems: 2,
-    userType: 'creator',
-    description: 'NFT creator',
-    avatarURL: 'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link',
-    balance: '5 ETH',
-    statistics: {
-        likes: 54,
-        sales: 3,
-        inbox: 6,
+export default function SocialProfile({ onNewFavorite,
+    followers, following, isAlreadyFollowed, user, isLoadingVF, isLoadingFollowing }) {
+    const [handleForm, setHandleForm] = useState()
+    const [profilePic, setProfilePic] = useState()
+    const [profile, setProfile] = useState()
+    const [isLoading, setIsLoading] = useState()
+    const [addr, setAddr] = useState()
+
+
+    const coursesContract = useCourses()
+
+    const getProfile = async () => {
+        let res = await coursesContract?.methods?.getMyProfile().call({ from: user })
+        console.log('res, ', res)
+        if (res.length !== 0) {
+            if (!profile) {
+                setProfile(res)
+                setProfilePic(res.profilePic)
+                setHandleForm(res.handle)
+                setAddr(res.addr)
+            }
+        }
     }
-}
 
-export default function SocialProfile({onNewFavorite, followers, following, isAlreadyFollowed}) {
+    useEffect(() => {
+        getProfile()
+    }, [])
     const handle = useSelector((state) => state.user.handle)
     return (
         <>
@@ -47,15 +59,13 @@ export default function SocialProfile({onNewFavorite, followers, following, isAl
                     <Image
                         h={'180px'}
                         w={'full'}
-                        src={
-                            'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link/'
-                        }
+                        src={wallpaperProfile}
                         objectFit={'cover'}
                     />
                     <Flex justify={'center'} mt={-12}>
                         <Avatar
                             size={'xl'}
-                            src={'https://bafybeiaksuur3oj4bhaxdgzwhrbnjg6gl4hop2srtocgbh3edl3pvjpiwe.ipfs.w3s.link/'}
+                            src={getFileWithCid(profilePic)}
                             alt={'Author'}
                             css={{
                                 border: '2px solid white',
@@ -65,26 +75,19 @@ export default function SocialProfile({onNewFavorite, followers, following, isAl
                     <Box p={6}>
                         <Stack spacing={0} align={'center'} mb={5}>
                             <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                                {handle}
+                                {handleForm}
                             </Heading>
-                            <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>{userExample.userType}</Text>
-                            <Text color={'gray.500'}>{userExample.description}</Text>
+                            <Text p={2}>{addr}</Text>
                         </Stack>
                         <Stack direction={'row'} justify={'center'} spacing={6}>
                             <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{userExample.subscribers}</Text>
-                                <Text fontSize={'sm'} color={'gray.500'}>
-                                    Subscribers
-                                </Text>
-                            </Stack>
-                            <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{following}</Text>
-                                <Text fontSize={'sm'} color={'gray.500'}>
+                                <Text fontWeight={600}isLoading={isLoadingFollowing}>{following}</Text>
+                                <Text fontSize={'sm'} color={'gray.500'} >
                                     Following
                                 </Text>
                             </Stack>
                             <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>{followers}</Text>
+                                <Text fontWeight={600}isLoading={isLoadingFollowing}>{followers}</Text>
                                 <Text fontSize={'sm'} color={'gray.500'}>
                                     Followers
                                 </Text>
@@ -96,6 +99,7 @@ export default function SocialProfile({onNewFavorite, followers, following, isAl
                             bg={useColorModeValue('#151f21', 'gray.900')}
                             color={'white'}
                             rounded={'md'}
+                            isLoading={isLoadingVF}
                             isDisabled={isAlreadyFollowed}
                             onClick={onNewFavorite}
                             _hover={{

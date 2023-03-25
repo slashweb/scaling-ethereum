@@ -1,7 +1,6 @@
 import { InfoIcon } from '@chakra-ui/icons'
-import { Avatar, Box, Button, Center, Flex, Grid, Heading, HStack, Image, Input, InputGroup, InputRightElement, Select, SimpleGrid, Stack, Text, useColorModeValue, VStack } from '@chakra-ui/react'
+import { Avatar, Box, Button, Center, Flex, Heading, HStack, Input, InputGroup, InputRightElement, Select, SimpleGrid, Stack, Text, useColorModeValue, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { SimpleProduct } from './MarketPlace'
 const exampleSubscribers = [{
     handle: 'Marie Johnson',
     wallet: 'b10..zx9',

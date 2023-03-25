@@ -1,5 +1,4 @@
-import { InfoIcon } from '@chakra-ui/icons';
-import { Avatar, Box, Button, Center, Flex, Heading, HStack, Input, InputGroup, InputRightElement, List, ListIcon, ListItem, Select, SimpleGrid, Stack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, List, ListIcon, ListItem, Text, VStack } from '@chakra-ui/react'
 import { FaCheckCircle } from 'react-icons/fa';
 
 export function PriceWrapper(props) {

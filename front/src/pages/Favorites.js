@@ -43,11 +43,14 @@ function Favorites() {
   const [likedContent, setLikedContent] = useState([])
   const wallet = useSelector((state) => state.user.wallet)
   const coursesContract = useCourses()
+  const [followingPeople, setFollowingPeople] = useState()
 
   const getFollowing = async () => {
     try {
       const res = await db.collection("Favorites").where("user", "==", wallet).get()
-      setFollowingData(res.data)
+      await setFollowingData(res.data)
+      getProfile(res.data.map(item=>item.data.following_user))
+      console.log('Following...',res.data)
     } catch (e) {
       Swal.fire({
         icon: 'error',
@@ -69,6 +72,15 @@ function Favorites() {
       })
     }
   }
+  const getProfile = async (addrs) => {
+    let promises=[]
+    promises = addrs.map(item=>{
+      return coursesContract?.methods?.getMyProfile().call({ from: item})
+    })
+    const res= await Promise.all(promises)
+    setFollowingPeople(res)
+  }
+
   const getFavoriteCourses = useCallback(async (ids) => {
     if (coursesContract) {
       try {
@@ -100,15 +112,15 @@ function Favorites() {
 
       {followingData.length > 0 ?
         <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
-          {followingData.map((item, index) => {
+          {followingPeople?.map((item, index) => {
             return (
               <React.Fragment key={index}>
                 <ProfileCard
-                  handle={''}
-                  wallet={item.data.following_user}
+                  handle={item.handle}
+                  wallet={item.addr}
                   userType={''}
                   description={''}
-                  avatarURL={''}
+                  avatarURL={item.profilePic}
                   plan={'No subscription'}
                 />
               </React.Fragment>

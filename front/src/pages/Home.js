@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Avatar } from "@chakra-ui/react";
 import TopCreatorTable from './marketplace/TopCreatorTable';
 import { tableDataTopCreators } from '../test/tableDataTopCreators';
@@ -432,8 +432,6 @@ function Home() {
             />
             </Box>
             <FeatureView />
-
-
         </>
     )
 };

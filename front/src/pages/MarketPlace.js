@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
     Box,
     Button,
@@ -13,19 +13,19 @@ import {
     useColorModeValue
 } from '@chakra-ui/react';
 import TopCreatorTable from './marketplace/TopCreatorTable';
-import {Link} from 'react-router-dom'
-import {tableDataTopCreators} from '../test/tableDataTopCreators';
-import {tableColumnsTopCreators} from '../test/tableColumnsTopCreators';
+import { Link } from 'react-router-dom'
+import { tableDataTopCreators } from '../test/tableDataTopCreators';
+import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
-import {BsFillTrashFill, BsPlayBtnFill} from 'react-icons/bs';
-import {useWeb3React} from '@web3-react/core'
+import { BsPlayBtnFill } from 'react-icons/bs';
 import useCourses from '../hooks/useCourses';
-import {getFileWithCid} from "../utils";
+import { getFileWithCid } from "../utils";
 import Swal from 'sweetalert2';
+import BuyModal from './special/BuyModal';
 
 
 export function SimpleProduct(props) {
-    const {image, name, author, price, bidders, download, currentbid, id} = props;
+    const { image, name, author, price, bidders, download, currentbid, id } = props;
     return (
         <Center py={4}>
             <Box
@@ -79,7 +79,7 @@ export function SimpleProduct(props) {
                     </Heading>
                     <Stack direction={'row'} align={'center'}>
                         <Text fontWeight={800} fontSize={'xl'}>
-                            {price}
+                            $ {parseInt(price).toFixed(2)} USD
                         </Text>
                     </Stack>
                     <HStack>
@@ -94,7 +94,7 @@ export function SimpleProduct(props) {
                                 cursor={'pointer'}
                             >
                                 <Text onClick={() => window.scrollTo(0, 0)} fontSize={'md'} color={'white'}
-                                      fontWeight={'semibold'}>
+                                    fontWeight={'semibold'}>
                                     More info
                                 </Text>
 
@@ -107,40 +107,24 @@ export function SimpleProduct(props) {
                                 roundedBottom={'sm'}
                                 cursor="pointer">
                                 <Button bg={'#406782'}
-                                        onClick={() => console.log('click in delete item')}><BsPlayBtnFill
-                                    fontSize={'24px'} color={'white'}/></Button>
+                                    onClick={() => console.log('click in delete item')}><BsPlayBtnFill
+                                        fontSize={'24px'} color={'white'} /></Button>
                             </Flex>
                         </Link>
                     </HStack>
-                    <Link
-                        href={download}
-                        mt={{
-                            base: "0px",
-                            md: "10px",
-                            lg: "0px",
-                            xl: "10px",
-                            "2xl": "0px",
-                        }}>
-                        <Button
-
-                            color='white'
-                            bg={'purple'}
-                            fontSize='sm'
-                            fontWeight='500'
-                            borderRadius='70px'
-                            px='24px'
-                            py='5px'>
-                            Place Bid
-                        </Button>
-                    </Link>
+                        <BuyModal
+                            title={name}
+                            price={parseInt(price)}
+                            id={id}
+                        />
                 </Stack>
             </Box>
+
         </Center>
     );
 }
 
 function MarketPlace() {
-    const {active} = useWeb3React()
     const coursesContract = useCourses()
     const [data, setData] = useState([])
     const getCourses = useCallback(async () => {
@@ -162,7 +146,7 @@ function MarketPlace() {
     })
     return (
         <>
-            <Box pt={{base: "80px", md: "80px", xl: "80px"}}>
+            <Box pt={{ base: "80px", md: "80px", xl: "80px" }}>
 
                 <Flex flexDirection='row' justifyContent={'space-around'}>
                     <Flex direction='column'>
@@ -170,14 +154,14 @@ function MarketPlace() {
                             mt='45px'
                             mb='20px'
                             justifyContent='space-between'
-                            direction={{base: "column", md: "row"}}
-                            align={{base: "start", md: "center"}}>
+                            direction={{ base: "column", md: "row" }}
+                            align={{ base: "start", md: "center" }}>
                             <Text color={'black'} fontSize='2xl' ms='24px' fontWeight='700'>
                                 All content
                             </Text>
                         </Flex>
 
-                        <SimpleGrid columns={{base: 1, md: 3}} gap='20px'>
+                        <SimpleGrid columns={{ base: 1, md: 3 }} gap='20px'>
                             {data.length !== 0 ? data.map((item, index) => {
                                 return (
                                     <SimpleProduct
@@ -189,14 +173,15 @@ function MarketPlace() {
                                         image={getFileWithCid(item.mainImage)}
                                         price={item['price']}
                                         download='#'
-                                    />
+                                    >
+                                    </SimpleProduct>
                                 )
                             }) : <Text>No content available</Text>}
                         </SimpleGrid>
                     </Flex>
                     <Flex
                         flexDirection='column'
-                        gridArea={{xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3"}}>
+                        gridArea={{ xl: "1 / 3 / 2 / 4", "2xl": "1 / 2 / 2 / 3" }}>
                         <Box px='0px' mb='20px'>
                             <TopCreatorTable
                                 tableData={tableDataTopCreators}
@@ -205,7 +190,7 @@ function MarketPlace() {
                         </Box>
                         <Box p='0px'>
                             <Flex
-                                align={{sm: "flex-start", lg: "center"}}
+                                align={{ sm: "flex-start", lg: "center" }}
                                 justify='space-between'
                                 w='100%'
                                 px='22px'

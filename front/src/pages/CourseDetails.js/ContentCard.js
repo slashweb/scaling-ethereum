@@ -22,11 +22,13 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { AiOutlineSend } from 'react-icons/ai';
-import { BiChat, BiLike } from 'react-icons/bi';
+import { BiLike } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { getFileWithCid } from "../../utils";
 import ReactPlayer from 'react-player'
+import BuyModal from '../special/BuyModal';
+import useCourses from '../../hooks/useCourses';
 
 
 function CommentCard({ props }) {
@@ -95,12 +97,32 @@ function CommentCard({ props }) {
   );
 }
 
-
-export default function ContentCard({ onSetLiked, likes, isAlreadyLiked, courseDetail, onCreateComment, storageComments }) {
-  const { author, title, description, video, mainImage } = courseDetail
+export default function ContentCard({ onSetLiked, likes, isAlreadyLiked, courseDetail, onCreateComment, storageComments, isLoadingVL }) {
+  let { author, title, description, video, mainImage, price, id } = courseDetail
+  const newPrice=parseInt(price)
   const [comment, setComment] = useState('')
-  useEffect(() => {
-  }, [])
+  const coursesContract = useCourses()
+
+  const [handleForm, setHandleForm] = useState()
+  const [profilePic, setProfilePic] = useState()
+  const [profile, setProfile] = useState()
+  const [isLoading, setIsLoading] = useState()
+  const [addr, setAddr] = useState()
+
+  const getProfile = async () => {
+      let res = await coursesContract?.methods?.getMyProfile().call({ from: author })
+      if (res.length !== 0) {
+          if (!profile) {
+              setProfile(res)
+              setProfilePic(res.profilePic)
+              setHandleForm(res.handle)
+              setAddr(res.addr)
+          }
+      }
+  }
+useEffect(()=>{
+  getProfile()
+}, [])
 
   return (
     <Container maxW={'1200'} p={14}>
@@ -110,11 +132,11 @@ export default function ContentCard({ onSetLiked, likes, isAlreadyLiked, courseD
             <Center flex='1' gap='12'>
               <VStack alignItems={'center'}>
                 <Link to={`/profile/${author}`}>
-                  <Avatar name={author} src='https://bit.ly/sage-adebayo' size={'xl'} />
+                  <Avatar name={author} src={getFileWithCid(profilePic)} size={'xl'} />
                 </Link>
                 <Box alignSelf={'center'}>
-                  <Heading size='lg' autoCapitalize='true'>{author}</Heading>
-                  <Text>Creator</Text>
+                  <Heading size='lg' autoCapitalize='true'>{handleForm}</Heading>
+                  <Text fontWeight={'bold'} color={'gray.500'}>{author}</Text>
                 </Box>
               </VStack>
             </Center>
@@ -141,7 +163,6 @@ export default function ContentCard({ onSetLiked, likes, isAlreadyLiked, courseD
           rounded={'lg'}
         />
         <CardFooter
-          justify='space-between'
           flexWrap='wrap'
           sx={{
             '& > button': {
@@ -150,23 +171,21 @@ export default function ContentCard({ onSetLiked, likes, isAlreadyLiked, courseD
           }}
         >
           <Button
+            variant='outline'
             flex='1'
-            variant='ghost'
             leftIcon={<BiLike />}
+            isLoading={isLoadingVL}
             isDisabled={isAlreadyLiked}
             onClick={onSetLiked}
           >
             Like
           </Button>
-          <Button
+          <BuyModal
             flex='1'
-            color='white'
-            bg={'purple'}
-            fontSize='sm'
-            fontWeight='500'
-            borderRadius='70px'>
-            Place Bid
-          </Button>
+            title={title}
+            price={newPrice}
+            id={id}
+          />
         </CardFooter>
         <Text>{likes} likes</Text>
         <HStack>
