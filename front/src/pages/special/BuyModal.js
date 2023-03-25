@@ -63,8 +63,12 @@ function BuyModal(props) {
     async function confirmTransaction() {
         const newPrice = await getUsdEthValueForContract(price)
         const newPriceW = getWei(newPrice)
-        console.log('New Price', newPriceW)
-        let res = await coursesContract?.methods?.buyContent(id).send({ value: newPriceW.toFixed(0), from: wallet })
+        console.log('price test', newPriceW)
+        let res = await coursesContract?.methods?.buyContent(id).send({
+            value: newPriceW.toFixed(0),
+            ammount: newPriceW.toFixed(0),
+            from: wallet 
+        })
         console.log('0x', res)
     }
     useEffect(() => {

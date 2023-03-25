@@ -35,8 +35,7 @@ export const getUsdEthValue = async quantity => {
 }
 export const getUsdEthValueForContract = async quantity => {
     const BigQuantity = new BigFloat32(quantity)
-    console.log('bquantity',BigQuantity)
     const eth = await getEth()
     const price = eth.market_data.current_price.usd
-    return (quantity / 1000) / price
+    return (quantity) / price
 }
