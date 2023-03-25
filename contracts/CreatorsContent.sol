@@ -188,14 +188,25 @@ contract CreatorsContent {
         return ammount;
     }  
 
-    function getBuysFromAuthor() public view returns (ContentBuy[] memory) {
-        ContentBuy[] memory list;
+    function getAllBuys() public view returns(ContentBuy[] memory) {
+        return ContentBuys;
+    }
 
+    function getBuysFromAuthor() public view returns (ContentBuy[] memory) {
         uint256 index = 0;
 
         for(uint256 i = 0; i < ContentBuys.length; i++) {
             if (ContentBuys[i].to == msg.sender) {
-                list[i] = ContentBuys[i];
+                index++;
+            }
+        }
+
+        ContentBuy[] memory list = new ContentBuy[](index);
+
+        index = 0;
+        for(uint256 i = 0; i < ContentBuys.length; i++) {
+            if (ContentBuys[i].to == msg.sender) {
+                list[index] = (ContentBuys[i]);
                 index++;
             }
         }
@@ -209,6 +220,8 @@ contract CreatorsContent {
 
         addr.transfer(ContentBuys[indexBuy].ammount);
         ContentBuys[indexBuy].isPayed = true;
+        
+        return;
     } 
 
     function getAllBalanceForCreator(address payable addr) public payable {
@@ -221,6 +234,7 @@ contract CreatorsContent {
         for (uint256 i = 0; i < ContentBuys.length; i++) {
             ContentBuys[i].isPayed = true;
         }
+        return;
     }
 
     function buyContent(uint256 idCourse) payable public {
@@ -228,11 +242,9 @@ contract CreatorsContent {
         // Get the content entity that will be buyed
         Content memory content = getCourseDetail(idCourse);
 
-        // Validate the price with the ammount to recieve
-        require(msg.value == content.price);
-
         // Save transaction for that the users can retrieve their money
         ContentBuys.push( ContentBuy(msg.sender, content.author, idCourse, msg.value, false));
+        return;
 
     }
 

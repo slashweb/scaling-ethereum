@@ -241,6 +241,46 @@
 			},
 			{
 				"inputs": [],
+				"name": "getAllBuys",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "from",
+								"type": "address"
+							},
+							{
+								"internalType": "address",
+								"name": "to",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "idContent",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "ammount",
+								"type": "uint256"
+							},
+							{
+								"internalType": "bool",
+								"name": "isPayed",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct CreatorsContent.ContentBuy[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getAllCourses",
 				"outputs": [
 					{
@@ -599,11 +639,11 @@
 			]
 		},
 		"contracts/CreatorsContent.sol": {
-			"keccak256": "0x1329f59afb9777d095e310f3e16b8f9e9d6e8fc554347dc0762dd2b9fae94896",
+			"keccak256": "0x68b53f17898f86c5043c7f11f20ae37114a8488603e1c9d23cd3e3f723be5dae",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://1b445164bd54a8d2279868c48352c98230c1ee42b7ba823ab30d2104439ab64c",
-				"dweb:/ipfs/Qmc6CLwaoCdqhgcnQfTVUEPPVk3TwUgBPtSPCRr8Whn77t"
+				"bzz-raw://f6c342651bbbdbb1733835994fbab975a21378c93ad536d9e6c347143912ab4e",
+				"dweb:/ipfs/QmP6ymZQfM4oKCXa7A9y8jTPGxa6AKh5KGbZrys43RzRCQ"
 			]
 		}
 	},
