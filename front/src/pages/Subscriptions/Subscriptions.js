@@ -1,10 +1,8 @@
 import { InfoIcon } from '@chakra-ui/icons';
-import { Center, Heading, SimpleGrid, VStack } from '@chakra-ui/react'
+import { Box, Center, Heading, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { db } from '../../constants';
-import { NoSubscribers } from '../Subscribers';
-import { useWeb3React } from '@web3-react/core';
 import { PriceWrapper } from './PriceWrapper';
 import { ProfileCard } from './ProfileCard';
 import Swal from 'sweetalert2'
@@ -88,32 +86,36 @@ function NoFollowing() {
 function Subscriptions() {
     const [results, setResults] = useState(exampleSubscriptions)
     const wallet = useSelector((state) => state.user.wallet)
-    const { active } = useWeb3React()
     const [followingData, setFollowingData] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
 
     const getFollowing = async () => {
-        try{
-        const res = await db.collection("Favorites").where("user", "==", wallet).get()
-        setFollowingData(res.data)
-        }catch(e){
+        try {
+            setIsLoading(true)
+            const res = await db.collection("Favorites").where("user", "==", wallet).get()
+            setFollowingData(res.data)
+            setIsLoading(false)
+        } catch (e) {
+            setIsLoading(false)
             Swal.fire({
                 icon: 'error',
                 title: `Error code: ${e.code}`,
                 text: `${e.message}`,
-              })
+            })
         }
     }
 
     useEffect(() => {
         getFollowing()
-    }, [active])
+    }, [])
 
     return (
         <>
-            <Heading m={10}>Following users</Heading>
+        <Box>
+            <Heading >My purchased courses</Heading>
             {followingData.length > 0 ?
                 <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
-                    {followingData.map((item, index) => {
+                    {isLoading?<Text>Loading content...</Text>:followingData.map((item, index) => {
                         return (
                             <React.Fragment key={index}>
                                 <ProfileCard
@@ -122,6 +124,7 @@ function Subscriptions() {
                                     userType={''}
                                     description={''}
                                     avatarURL={''}
+                                    isLoading={false}
                                     plan={'No subscription'}
                                 />
                             </React.Fragment>
@@ -131,7 +134,7 @@ function Subscriptions() {
                 :
                 <NoFollowing />}
 
-            <Heading m={10}>Subscriptions </Heading>
+            <Heading mt={10}>Subscriptions </Heading>
             {results.length > 0 ?
                 <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12}>
                     {results.map((item, index) => {
@@ -151,6 +154,7 @@ function Subscriptions() {
                 </SimpleGrid>
                 :
                 <NoSubscriptions />}
+                </Box>
         </>
     )
 }

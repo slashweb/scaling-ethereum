@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect } from 'react'
-import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Button, Avatar, Alert } from "@chakra-ui/react";
-import { useWeb3React } from '@web3-react/core'
-import useCourses from '../hooks/useCourses';
-import { connector } from '../config/web3';
+import React from 'react'
+import { chakra, Box, useColorModeValue, Icon, Image, Flex, Stack, Avatar } from "@chakra-ui/react";
 import TopCreatorTable from './marketplace/TopCreatorTable';
 import { tableDataTopCreators } from '../test/tableDataTopCreators';
 import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
+import Carousel from './Carousel';
 
 function Hero1() {
     const bg = useColorModeValue("white", "gray.800");
@@ -89,6 +87,7 @@ function Hero1() {
                             >
                                 <Box rounded="full" shadow="md">
                                     <chakra.a
+                                    href={'/marketplace'}
                                         w="full"
                                         display="flex"
                                         alignItems="center"
@@ -107,23 +106,6 @@ function Hero1() {
                                     </chakra.a>
                                 </Box>
                                 <Box mt={[3, 0]} ml={[null, 3]}>
-                                    <chakra.a
-                                        w="full"
-                                        display="flex"
-                                        alignItems="center"
-                                        justifyContent="center"
-                                        px={{ base: 8, md: 10 }}
-                                        py={{ base: 3, md: 4 }}
-                                        border="solid 1px transparent"
-                                        fontSize={{ base: "md", md: "lg" }}
-                                        rounded="md"
-                                        color="brand.700"
-                                        bg="brand.100"
-                                        _hover={{ bg: "brand.200" }}
-                                        cursor="pointer"
-                                    >
-                                        Live demo
-                                    </chakra.a>
                                 </Box>
                             </Box>
                         </Box>
@@ -312,40 +294,6 @@ function FeatureView() {
         </Flex>
     );
 };
-const testimonials = [
-    {
-        name: 'Brandon P.',
-        role: 'Chief Marketing Officer',
-        content:
-            'It really saves me time and effort. It is exactly what our business has been lacking. EEZY is the most valuable business resource we have EVER purchased. After using EEZY my business skyrocketed!',
-        avatar:
-            'https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80',
-    },
-    {
-        name: 'Krysta B.',
-        role: 'Entrepreneur',
-        content:
-            "I didn't even need training. We've used EEZY for the last five years. I have gotten at least 50 times the value from EEZY. I made back the purchase price in just 48 hours!",
-        avatar:
-            'https://images.unsplash.com/photo-1598550874175-4d0ef436c909?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80',
-    },
-    {
-        name: 'Darcy L.',
-        role: 'Movie star',
-        content:
-            "Thank you for making it painless, pleasant and most of all, hassle free! I'm good to go. No matter where you go, EEZY is the coolest, most happening thing around! I love EEZY!",
-        avatar:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=334&q=80',
-    },
-    {
-        name: 'Daniel T.',
-        role: 'Musician',
-        content:
-            'I am so pleased with this product. EEZY is both attractive and highly adaptable. Without EEZY, we would have gone bankrupt by now. Thank you for creating this product!',
-        avatar:
-            'https://images.unsplash.com/photo-1606513542745-97629752a13b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80',
-    },
-];
 
 const backgrounds = [
     `url("data:image/svg+xml, %3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'560\' height=\'185\' viewBox=\'0 0 560 185\' fill=\'none\'%3E%3Cellipse cx=\'102.633\' cy=\'61.0737\' rx=\'102.633\' ry=\'61.0737\' fill=\'%23ED64A6\' /%3E%3Cellipse cx=\'399.573\' cy=\'123.926\' rx=\'102.633\' ry=\'61.0737\' fill=\'%23F56565\' /%3E%3Cellipse cx=\'366.192\' cy=\'73.2292\' rx=\'193.808\' ry=\'73.2292\' fill=\'%2338B2AC\' /%3E%3Cellipse cx=\'222.705\' cy=\'110.585\' rx=\'193.808\' ry=\'73.2292\' fill=\'%23ED8936\' /%3E%3C/svg%3E")`,
@@ -425,25 +373,17 @@ function TestimonialCard({ props, index }) {
 }
 
 function Home() {
-    const { active, account, activate } = useWeb3React()
-    const coursesContract = useCourses()
-
-    const connect = useCallback(() => {
-        activate(connector)
-    }, [activate])
-
     return (
         <>
             <Hero1 />
-            <Box px='20' mx={10} mb='20px'bg={'white'}>
-            <TopCreatorTable
-                tableData={tableDataTopCreators}
-                columnsData={tableColumnsTopCreators}
-            />
+            <Box px='20' mx={10} mb='20px' bg={'white'}>
+                <Carousel />
+                <TopCreatorTable
+                    tableData={tableDataTopCreators}
+                    columnsData={tableColumnsTopCreators}
+                />
             </Box>
             <FeatureView />
-
-
         </>
     )
 };

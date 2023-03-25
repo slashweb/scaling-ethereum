@@ -14,15 +14,15 @@ import {
     MenuDivider,
     Menu,
 } from "@chakra-ui/react";
-import React, {useCallback, useEffect, useState} from 'react'
-import {AiFillHome, AiFillBell, AiOutlineShop} from "react-icons/ai";
-import {BsFillCameraVideoFill, BsPlus} from "react-icons/bs";
-import {Link} from 'react-router-dom';
-import {useSelector, useDispatch} from 'react-redux'
-import {setWallet} from "../actions/users";
-import {Auth} from '@polybase/auth'
+import React, { useCallback, useEffect, useState } from 'react'
+import { AiFillHome, AiFillBell, AiOutlineShop } from "react-icons/ai";
+import { BsFillCameraVideoFill, BsPlus } from "react-icons/bs";
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'
+import { setWallet } from "../actions/users";
+import { Auth } from '@polybase/auth'
 import useCourses from "../hooks/useCourses";
-import {guid} from "../utils";
+import { guid } from "../utils";
 import { getFileWithCid } from "../utils";
 
 function Navbar() {
@@ -36,7 +36,7 @@ function Navbar() {
     const [profile, setProfile] = useState()
 
     const createNewProfile = async () => {
-        const res = await coursesContract?.methods?.createNewProfile(guid(), '').send({from: wallet})
+        const res = await coursesContract?.methods?.createNewProfile(guid(), '').send({ from: wallet })
         if (res) {
             return await getMyProfile()
         }
@@ -44,7 +44,7 @@ function Navbar() {
     }
 
     const getMyProfile = async () => {
-        let res = await coursesContract?.methods?.getMyProfile().call({from: wallet})
+        let res = await coursesContract?.methods?.getMyProfile().call({ from: wallet })
         if (res.addr === '0x0000000000000000000000000000000000000000') {
             await createNewProfile()
         }
@@ -62,12 +62,12 @@ function Navbar() {
     })
 
     async function signIn(force) {
-        const res = await auth.signIn({force});
+        const res = await auth.signIn({ force });
     }
 
 
     const connect = async () => {
-        const authState = await auth.signIn({force: true})
+        const authState = await auth.signIn({ force: true })
         const userId = authState.userId
         dispatch(setWallet(userId))
     }
@@ -89,7 +89,7 @@ function Navbar() {
             <chakra.header
                 bg={bg}
                 w="full"
-                px={{base: 2, sm: 4}}
+                px={{ base: 2, sm: 4 }}
                 py={4}
                 shadow="md"
             >
@@ -98,12 +98,12 @@ function Navbar() {
                         <Link to={'/'}>
                             <Text>Logo</Text>
                         </Link>
-                        <HStack spacing={3} display={{base: "none", md: "inline-flex"}}>
+                        <HStack spacing={3} display={{ base: "none", md: "inline-flex" }}>
                             <Link to={'/'}>
                                 <Button variant="solid"
-                                        leftIcon={<AiFillHome/>}
-                                        colorScheme="brand"
-                                        size="sm">
+                                    leftIcon={<AiFillHome />}
+                                    colorScheme="brand"
+                                    size="sm">
                                     Home
                                 </Button>
                             </Link>
@@ -111,7 +111,7 @@ function Navbar() {
                                 <Button
                                     variant="solid"
                                     colorScheme="brand"
-                                    leftIcon={<AiOutlineShop/>}
+                                    leftIcon={<AiOutlineShop />}
                                     size="sm"
                                 >
                                     Marketplace
@@ -137,12 +137,12 @@ function Navbar() {
                         <Box
                             p={3}
                             color="gray.800"
-                            _dark={{color: "inherit"}}
+                            _dark={{ color: "inherit" }}
                             rounded="sm"
-                            _hover={{color: "gray.800", _dark: {color: "gray.600"}}}
+                            _hover={{ color: "gray.800", _dark: { color: "gray.600" } }}
                         >
                             <Link to={'notifications'}>
-                                <AiFillBell/>
+                                <AiFillBell />
                                 <VisuallyHidden>Notifications</VisuallyHidden>
                             </Link>
                         </Box>
@@ -150,7 +150,7 @@ function Navbar() {
                         <Button
                             variant="solid"
                             size="sm"
-                            leftIcon={wallet ? null : <BsPlus/>} onClick={wallet ? disconnectWallet : connect}
+                            leftIcon={wallet ? null : <BsPlus />} onClick={wallet ? disconnectWallet : connect}
                         >
                             {wallet ? 'Disconnect wallet' : 'Connect wallet'}
                         </Button>
@@ -184,7 +184,7 @@ function Navbar() {
                                         <MenuItem><Link to={'subscriptions'}>My subscriptions</Link></MenuItem>
                                         {type === 'user' || !type ? null :
                                             <MenuItem><Link to={'subscribers'}>My subscribers</Link></MenuItem>}
-                                        <MenuDivider/>
+                                        <MenuDivider />
                                         <MenuItem>Sign Out</MenuItem>
                                     </MenuList>
                                 </Menu>

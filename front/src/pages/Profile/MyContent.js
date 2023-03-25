@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import {
     useDisclosure,
     Box,
@@ -19,12 +19,12 @@ import {
     Textarea,
 } from "@chakra-ui/react"
 import FilePicker from "chakra-ui-file-picker";
-import {saveImageToFileCoin} from "../../utils";
+import { saveImageToFileCoin } from "../../utils";
 import Swal from "sweetalert2";
 
-export default function MyContent({onCreateCourse, courseCreated}) {
+export default function MyContent({ onCreateCourse, courseCreated }) {
 
-    const {isOpen, onOpen, onClose} = useDisclosure()
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const [isLoading, setIsLoading] = useState(false)
     const [title, setTitle] = useState('')
     const [price, setPrice] = useState(0)
@@ -35,7 +35,8 @@ export default function MyContent({onCreateCourse, courseCreated}) {
 
     const createCourse = () => {
         setIsLoading(true)
-        onCreateCourse({title, description, price, mainImage, video})
+        onCreateCourse({ title, description, price, mainImage, video })
+        setIsLoading(false)
     }
 
     useEffect(() => {
@@ -47,29 +48,29 @@ export default function MyContent({onCreateCourse, courseCreated}) {
     }, [courseCreated])
     return (
         <>
-            <Heading>My Content</Heading>
             <Button onClick={onOpen}>Add new content</Button>
+                
             <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay/>
+                <ModalOverlay />
                 <ModalContent>
                     <ModalHeader>Create new content</ModalHeader>
-                    <ModalCloseButton/>
+                    <ModalCloseButton />
                     <ModalBody>
                         <Box p={8}>
                             <Stack spacing={4}>
                                 <HStack>
                                     <FormControl id="title" isRequired>
                                         <FormLabel>Title</FormLabel>
-                                        <Input type="text" onChange={(e) => setTitle(e.target.value)}/>
+                                        <Input type="text" onChange={(e) => setTitle(e.target.value)} />
                                     </FormControl>
                                     <FormControl id="price" isRequired>
                                         <FormLabel>Price</FormLabel>
-                                        <Input type="number" onChange={(e) => setPrice(e.target.value)}/>
+                                        <Input type="number" onChange={(e) => setPrice(e.target.value)} />
                                     </FormControl>
                                 </HStack>
                                 <FormControl id="description" isRequired>
                                     <FormLabel>Description</FormLabel>
-                                    <Textarea onChange={(e) => setDescription(e.target.value)}/>
+                                    <Textarea onChange={(e) => setDescription(e.target.value)} />
                                 </FormControl>
 
                                 <FormControl id="pictures" isRequired>

@@ -7,6 +7,7 @@ export const Layout = (props) => {
     return (
         <>
             <Navbar />
+            
             <Box bg={'gray.200'}>
             {props.children}
             </Box>
