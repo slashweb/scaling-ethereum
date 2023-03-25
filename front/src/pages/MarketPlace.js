@@ -17,7 +17,6 @@ import { Link } from 'react-router-dom'
 import { tableDataTopCreators } from '../test/tableDataTopCreators';
 import { tableColumnsTopCreators } from '../test/tableColumnsTopCreators';
 import HistoryItem from './marketplace/HistoryItem';
-import { BsPlayBtnFill } from 'react-icons/bs';
 import useCourses from '../hooks/useCourses';
 import { getFileWithCid } from "../utils";
 import Swal from 'sweetalert2';
@@ -100,26 +99,14 @@ export function SimpleProduct(props) {
 
                             </Flex>
                         </Link>
-                        <Link to={`/courses/play/${id}`}>
-                            <Flex
-                                p={4}
-                                justifyContent={'space-between'}
-                                roundedBottom={'sm'}
-                                cursor="pointer">
-                                <Button bg={'#406782'}
-                                    onClick={() => console.log('click in delete item')}><BsPlayBtnFill
-                                        fontSize={'24px'} color={'white'} /></Button>
-                            </Flex>
-                        </Link>
-                    </HStack>
                         <BuyModal
                             title={name}
                             price={parseInt(price)}
                             id={id}
                         />
+                    </HStack>
                 </Stack>
             </Box>
-
         </Center>
     );
 }

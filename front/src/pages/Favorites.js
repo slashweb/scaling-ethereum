@@ -50,7 +50,6 @@ function Favorites() {
       const res = await db.collection("Favorites").where("user", "==", wallet).get()
       await setFollowingData(res.data)
       getProfile(res.data.map(item=>item.data.following_user))
-      console.log('Following...',res.data)
     } catch (e) {
       Swal.fire({
         icon: 'error',

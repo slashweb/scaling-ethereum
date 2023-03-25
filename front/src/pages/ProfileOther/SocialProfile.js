@@ -12,7 +12,7 @@ import {
 
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import Swal from 'sweetalert2';
 import wallpaperProfile from '../../assets/wallpaperProfile.jpeg'
 import useCourses from "../../hooks/useCourses";
 import { getFileWithCid } from '../../utils';
@@ -22,29 +22,33 @@ export default function SocialProfile({ onNewFavorite,
     const [handleForm, setHandleForm] = useState()
     const [profilePic, setProfilePic] = useState()
     const [profile, setProfile] = useState()
-    const [isLoading, setIsLoading] = useState()
     const [addr, setAddr] = useState()
-
 
     const coursesContract = useCourses()
 
     const getProfile = async () => {
-        let res = await coursesContract?.methods?.getMyProfile().call({ from: user })
-        console.log('res, ', res)
-        if (res.length !== 0) {
-            if (!profile) {
-                setProfile(res)
-                setProfilePic(res.profilePic)
-                setHandleForm(res.handle)
-                setAddr(res.addr)
+        try {
+            let res = await coursesContract?.methods?.getMyProfile().call({ from: user })
+            if (res.length !== 0) {
+                if (!profile) {
+                    setProfile(res)
+                    setProfilePic(res.profilePic)
+                    setHandleForm(res.handle)
+                    setAddr(res.addr)
+                }
             }
+        } catch (e) {
+            Swal.fire({
+                icon: 'error',
+                title: `Error code: ${e.code}`,
+                text: `${e.message}`,
+            })
         }
     }
 
     useEffect(() => {
         getProfile()
     }, [])
-    const handle = useSelector((state) => state.user.handle)
     return (
         <>
             <Center py={6}>
@@ -81,13 +85,13 @@ export default function SocialProfile({ onNewFavorite,
                         </Stack>
                         <Stack direction={'row'} justify={'center'} spacing={6}>
                             <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}isLoading={isLoadingFollowing}>{following}</Text>
+                                <Text fontWeight={600} isLoading={isLoadingFollowing}>{following}</Text>
                                 <Text fontSize={'sm'} color={'gray.500'} >
                                     Following
                                 </Text>
                             </Stack>
                             <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}isLoading={isLoadingFollowing}>{followers}</Text>
+                                <Text fontWeight={600} isLoading={isLoadingFollowing}>{followers}</Text>
                                 <Text fontSize={'sm'} color={'gray.500'}>
                                     Followers
                                 </Text>

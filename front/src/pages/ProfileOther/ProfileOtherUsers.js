@@ -1,6 +1,5 @@
 import { InfoIcon } from '@chakra-ui/icons'
 import { Center, Heading, Text, VStack } from '@chakra-ui/react'
-import { useWeb3React } from '@web3-react/core'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -105,7 +104,6 @@ export default function ProfileOtherUsers() {
             try {
                 setIsLoadingCourses(true)
                 const res = await coursesContract?.methods?.getMyCourses().call({ from: user })
-                //setIsLoading(false)
                 setMyCourses(res)
                 setIsLoadingCourses(false)
             } catch (e) {
@@ -117,7 +115,6 @@ export default function ProfileOtherUsers() {
                 })
             }
         }
-        // setIsLoading(false)
     })
     useEffect(() => {
         if (user.toLowerCase() === wallet.toLowerCase()) {

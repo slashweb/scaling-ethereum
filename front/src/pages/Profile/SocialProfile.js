@@ -46,7 +46,6 @@ export default function SocialProfile(props) {
             let res = await coursesContract?.methods?.getMyProfile().call({ from: wallet })
             if (res.length !== 0) {
                 if (!profile) {
-                    console.log('My perfil', res)
                     setProfile(res)
                     setHandleForm(res.handle)
                     setAddr(res.addr)
@@ -121,24 +120,15 @@ export default function SocialProfile(props) {
                                 />
                                 : null
                         }
-
                     </Flex>
                     <Box p={6}>
                         <Stack spacing={0} align={'center'} mb={5}>
-                            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'} mb={10}>
+                            <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
                                 {profile?.handle}
                             </Heading>
-                            <Text bg={'blue'} color={'white'} rounded={'md'} p={2}>Content creator</Text>
-                            <br />
-                            <Text color={'gray.500'}>User profile</Text>
+                            <Text p={2}>{addr}</Text>
                         </Stack>
                         <Stack direction={'row'} justify={'center'} spacing={6}>
-                            <Stack spacing={0} align={'center'}>
-                                <Text fontWeight={600}>30</Text>
-                                <Text fontSize={'sm'} color={'gray.500'}>
-                                    Subscribers
-                                </Text>
-                            </Stack>
                             <Stack spacing={0} align={'center'}>
                                 <Text fontWeight={600}>{followingNumber}</Text>
                                 <Text fontSize={'sm'} color={'gray.500'}>

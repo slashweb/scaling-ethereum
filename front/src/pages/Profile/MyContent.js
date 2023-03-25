@@ -36,6 +36,7 @@ export default function MyContent({ onCreateCourse, courseCreated }) {
     const createCourse = () => {
         setIsLoading(true)
         onCreateCourse({ title, description, price, mainImage, video })
+        setIsLoading(false)
     }
 
     useEffect(() => {

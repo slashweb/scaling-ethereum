@@ -75,7 +75,6 @@ function NoMoreContentbyAuthor() {
 }
 
 function ShowContentCards(data) {
-  console.log('9876', data.data)
   return (
     <SimpleGrid columns={{ base: 1, md: 4 }} gap='20px' m={12} >
       {data.data?.map((item, index) => {
@@ -100,7 +99,6 @@ function CourseDetail() {
   const { id } = useParams()
   const coursesContract = useCourses()
   const [courseDetail, setCourseDetail] = useState([])
-  const data = []
   const wallet = useSelector((state) => state.user.wallet)
   const [filteredContent, setFilteredContent] = useState([])
   const [storageComments, setStorageComments] = useState([])
@@ -138,7 +136,6 @@ function CourseDetail() {
         setIsLoadingGIBA(true)
         let promises = []
         const res = await coursesContract?.methods?.getMyCourses().call({ from: author })
-        //setIsLoading(false)
         promises = res.filter(item => { return item.id !== id.toString() })
         const filtered = await Promise.all(promises)
         setFilteredContent(filtered)
@@ -152,7 +149,6 @@ function CourseDetail() {
         })
       }
     }
-    // setIsLoading(false)
   }, [coursesContract])
 
   const createNewComment = async comment => {
@@ -222,8 +218,6 @@ function CourseDetail() {
   const showComments = async () => {
     try {
       const res = await db.collection("Comments").where("id_post", "==", parseInt(id)).get()
-      //const filteringCurrent = res.data.filter(item => item.data.id_post ==parseInt(id))
-      //console.log('Filtering',filteringCurrent)
       return setStorageComments(res.data.reverse())
     } catch (e) {
       Swal.fire({
@@ -233,8 +227,6 @@ function CourseDetail() {
       })
     }
   }
-
-
 
   useEffect(() => {
     verifyLiked()

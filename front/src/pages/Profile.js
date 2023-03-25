@@ -3,10 +3,10 @@ import {
     Heading,
     Center,
     VStack,
+    Text,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useWeb3React } from '@web3-react/core';
 import useCourses from '../hooks/useCourses';
 import MyContent from "./Profile/MyContent";
 import SocialProfile from './Profile/SocialProfile';
@@ -28,7 +28,6 @@ function NoContentbyAuthor() {
 }
 
 export default function Profile() {
-    const { active } = useWeb3React()
     const coursesContract = useCourses()
     const [myCourses, setMyCourses] = useState([])
     const wallet = useSelector((state) => state.user.wallet)
@@ -38,6 +37,7 @@ export default function Profile() {
     const [followingData, setFollowingData] = useState(0)
     const [courseCreated, setCourseCreated] = useState(null)
     const [profile, setProfile] = useState()
+    const [isLoading, setIsLoading] = useState(false)
 
     const createNewCourse = async newCourse => {
         try {
@@ -49,6 +49,11 @@ export default function Profile() {
                 newCourse.mainImage
             )?.send({ from: wallet })
             setCourseCreated(res)
+            Swal.fire({
+                icon: 'success',
+                title: `Succes`,
+                text: `Course created successfully`,
+            })
         } catch (err) {
             Swal.fire({
                 icon: 'error',
@@ -57,7 +62,6 @@ export default function Profile() {
             })
         }
     }
-
 
     const getFollowersCount = async () => {
         const res = await db.collection("Favorites").where("following_user", "==", wallet).get()
@@ -71,21 +75,28 @@ export default function Profile() {
     }
 
     const getItemsByAuthor = (async () => {
-        // setIsLoading(true)
         if (coursesContract) {
-            const res = await coursesContract?.methods?.getMyCourses().call({ from: wallet })
-                //setIsLoading(false)
-                .catch(e => alert(e))
-            setMyCourses(res)
+            try {
+                setIsLoading(true)
+                const res = await coursesContract?.methods?.getMyCourses().call({ from: wallet })
+                setMyCourses(res)
+                setIsLoading(false)
+            } catch (e) {
+                setIsLoading(false)
+                Swal.fire({
+                    icon: 'error',
+                    title: `Error code: ${e.code}`,
+                    text: `${e.message}`,
+                })
+            }
         }
-        // setIsLoading(false)
     })
 
     useEffect(() => {
         getItemsByAuthor()
         getFollowersCount()
         getFollowingCount()
-    }, [active])
+    }, [])
 
     return (
         <>
@@ -101,7 +112,7 @@ export default function Profile() {
 
 
             <Heading>My Content</Heading>
-            {myCourses?.length > 0 ?
+            {isLoading?<Text>Loading my content...</Text>:myCourses?.length > 0 ?
                 <ShowContentCards courses={myCourses} />
                 :
                 <NoContentbyAuthor />}
