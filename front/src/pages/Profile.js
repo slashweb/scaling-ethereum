@@ -38,9 +38,11 @@ export default function Profile() {
     const [courseCreated, setCourseCreated] = useState(null)
     const [profile, setProfile] = useState()
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingC, setIsLoadingC] = useState(false)
 
     const createNewCourse = async newCourse => {
         try {
+            setIsLoadingC(true)
             const res = await coursesContract?.methods?.createNewContent(
                 newCourse.title,
                 newCourse.description,
@@ -49,12 +51,15 @@ export default function Profile() {
                 newCourse.mainImage
             )?.send({ from: wallet })
             setCourseCreated(res)
+            setIsLoadingC(false)
+            getItemsByAuthor()
             Swal.fire({
                 icon: 'success',
                 title: `Succes`,
                 text: `Course created successfully`,
             })
         } catch (err) {
+            setIsLoadingC(false)
             Swal.fire({
                 icon: 'error',
                 title: `Error code: ${err.code}`,
@@ -107,6 +112,7 @@ export default function Profile() {
                 <MyContent
                     onCreateCourse={(newCourse) => createNewCourse(newCourse)}
                     courseCreated={courseCreated}
+                    isLoading={isLoadingC}
                 />
             </SocialProfile>
 

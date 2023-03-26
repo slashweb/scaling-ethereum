@@ -69,7 +69,6 @@ function BuyModal(props) {
             ammount: newPriceW.toFixed(0),
             from: wallet 
         })
-        console.log('0x', res)
     }
     useEffect(() => {
         setDolarEthConversion()

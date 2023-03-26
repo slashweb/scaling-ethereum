@@ -17,15 +17,18 @@ import {
     FormControl,
     FormLabel,
     Textarea,
+    Spinner,
+    Center
 } from "@chakra-ui/react"
 import FilePicker from "chakra-ui-file-picker";
 import { saveImageToFileCoin } from "../../utils";
 import Swal from "sweetalert2";
 
-export default function MyContent({ onCreateCourse, courseCreated }) {
+export default function MyContent({ onCreateCourse, courseCreated, isLoading }) {
 
     const { isOpen, onOpen, onClose } = useDisclosure()
-    const [isLoading, setIsLoading] = useState(false)
+
+    const [isLoadingV, setIsLoadingV] = useState(false)
     const [title, setTitle] = useState('')
     const [price, setPrice] = useState(0)
     const [description, setDescription] = useState('')
@@ -34,22 +37,22 @@ export default function MyContent({ onCreateCourse, courseCreated }) {
 
 
     const createCourse = () => {
-        setIsLoading(true)
+
         onCreateCourse({ title, description, price, mainImage, video })
-        setIsLoading(false)
+
     }
 
     useEffect(() => {
         if (courseCreated) {
             Swal.fire('Content created successfully')
-            setIsLoading(false)
+
             onClose()
         }
     }, [courseCreated])
     return (
         <>
             <Button onClick={onOpen}>Add new content</Button>
-                
+
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
@@ -77,18 +80,20 @@ export default function MyContent({ onCreateCourse, courseCreated }) {
                                     <HStack>
                                         <FilePicker
                                             onFileChange={async (fileList) => {
-                                                setIsLoading(true)
+                                                setIsLoadingV(true)
                                                 try {
                                                     const cid = await saveImageToFileCoin(fileList)
                                                     setMainImage(cid)
-                                                    setIsLoading(false)
+                                                    setIsLoadingV(false)
                                                 } catch (err) {
                                                     Swal.fire('There was an error uploading the image')
-                                                    setIsLoading(false)
+                                                    setIsLoadingV(false)
                                                 }
                                             }}
                                             placeholder={"Content Image"}
                                             clearButtonLabel='browse'
+
+                                            
                                             multipleFiles={false}
                                             hideClearButton={false}
                                         />
@@ -100,18 +105,18 @@ export default function MyContent({ onCreateCourse, courseCreated }) {
                                     <HStack>
                                         <FilePicker
                                             onFileChange={async (fileList) => {
-                                                setIsLoading(true)
+                                                setIsLoadingV(true)
                                                 try {
                                                     const cid = await saveImageToFileCoin(fileList)
                                                     setVideo(cid)
-                                                    setIsLoading(false)
+                                                    setIsLoadingV(false)
                                                 } catch (err) {
                                                     Swal.fire('There was an error uploading the image')
-                                                    setIsLoading(false)
+                                                    setIsLoadingV(false)
                                                 }
                                             }}
                                             placeholder={"Content Video"}
-                                            clearButtonLabel='browse'
+                                            clearButtonLabel='clear'
                                             multipleFiles={false}
                                             accept="video/mp4"
                                             hideClearButton={false}
@@ -119,7 +124,8 @@ export default function MyContent({ onCreateCourse, courseCreated }) {
 
                                     </HStack>
                                 </FormControl>
-
+                                <Center>
+                                </Center>
                             </Stack>
                         </Box>
                     </ModalBody>
