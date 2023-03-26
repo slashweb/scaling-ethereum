@@ -28,12 +28,12 @@ export default function MyContent({ onCreateCourse, courseCreated, isLoading }) 
 
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const [isLoadingV, setIsLoadingV] = useState(false)
     const [title, setTitle] = useState('')
     const [price, setPrice] = useState(0)
     const [description, setDescription] = useState('')
     const [mainImage, setMainImage] = useState('')
     const [video, setVideo] = useState('')
+    const [isUploading, setIsUploading] = useState()
 
 
     const createCourse = () => {
@@ -80,20 +80,18 @@ export default function MyContent({ onCreateCourse, courseCreated, isLoading }) 
                                     <HStack>
                                         <FilePicker
                                             onFileChange={async (fileList) => {
-                                                setIsLoadingV(true)
                                                 try {
+                                                    setIsUploading(true)
                                                     const cid = await saveImageToFileCoin(fileList)
                                                     setMainImage(cid)
-                                                    setIsLoadingV(false)
+                                                    setIsUploading(false)
                                                 } catch (err) {
                                                     Swal.fire('There was an error uploading the image')
-                                                    setIsLoadingV(false)
+                                                    setIsUploading(false)
                                                 }
                                             }}
                                             placeholder={"Content Image"}
-                                            clearButtonLabel='browse'
-
-                                            
+                                            clearButtonLabel='clear'
                                             multipleFiles={false}
                                             hideClearButton={false}
                                         />
@@ -105,14 +103,14 @@ export default function MyContent({ onCreateCourse, courseCreated, isLoading }) 
                                     <HStack>
                                         <FilePicker
                                             onFileChange={async (fileList) => {
-                                                setIsLoadingV(true)
                                                 try {
+                                                    setIsUploading(true)
                                                     const cid = await saveImageToFileCoin(fileList)
                                                     setVideo(cid)
-                                                    setIsLoadingV(false)
+                                                    setIsUploading(false)
                                                 } catch (err) {
+                                                    setIsUploading(false)
                                                     Swal.fire('There was an error uploading the image')
-                                                    setIsLoadingV(false)
                                                 }
                                             }}
                                             placeholder={"Content Video"}
@@ -136,7 +134,7 @@ export default function MyContent({ onCreateCourse, courseCreated, isLoading }) 
                         </Button>
                         <Button
                             colorScheme='blue'
-                            isLoading={isLoading}
+                            isLoading={isLoading || isUploading}
                             onClick={createCourse}
                         >
                             Create content
