@@ -23,7 +23,7 @@ function Footer() {
             >
                 <Flex justify="center">
                     <Image
-                        src="http://placehold.jp/2a2a2c/ffffff/200x100.png?text=Company%20Logo&css=%7B%22font-size%20%22%3A%22%2016px%22%7D"
+                        src="https://res.cloudinary.com/dgcxcqu6p/image/upload/v1679799915/logo-image_wdlar6.jpg"
                         alt="Company Logo"
                         rounded="lg"
                         width={{
