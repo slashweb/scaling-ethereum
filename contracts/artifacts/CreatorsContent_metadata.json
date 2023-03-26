@@ -44,6 +44,11 @@
 						"internalType": "bool",
 						"name": "isPayed",
 						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -269,6 +274,11 @@
 								"internalType": "bool",
 								"name": "isPayed",
 								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct CreatorsContent.ContentBuy[]",
@@ -395,6 +405,11 @@
 								"internalType": "bool",
 								"name": "isPayed",
 								"type": "bool"
+							},
+							{
+								"internalType": "uint256",
+								"name": "id",
+								"type": "uint256"
 							}
 						],
 						"internalType": "struct CreatorsContent.ContentBuy[]",
@@ -592,13 +607,7 @@
 					}
 				],
 				"name": "setProfileImage",
-				"outputs": [
-					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
-					}
-				],
+				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			}
@@ -639,11 +648,11 @@
 			]
 		},
 		"contracts/CreatorsContent.sol": {
-			"keccak256": "0x68b53f17898f86c5043c7f11f20ae37114a8488603e1c9d23cd3e3f723be5dae",
+			"keccak256": "0xae27fe0512de59a34734ccd2c118361f5c12a053f5dcac99544bea5bae666393",
 			"license": "GPL-3.0",
 			"urls": [
-				"bzz-raw://f6c342651bbbdbb1733835994fbab975a21378c93ad536d9e6c347143912ab4e",
-				"dweb:/ipfs/QmP6ymZQfM4oKCXa7A9y8jTPGxa6AKh5KGbZrys43RzRCQ"
+				"bzz-raw://cd752b511b3dda1981baa1a07e36c790629ccd0c95306af16eb59f4ab51b15b2",
+				"dweb:/ipfs/QmdVGbNGMvZ3WKYGzcxzopCDGzXk1rbtcppeQ8afGMFaMo"
 			]
 		}
 	},

@@ -32,6 +32,7 @@ contract CreatorsContent {
         uint256 idContent;
         uint256 ammount;
         bool isPayed;
+        uint256 id;
     }
 
     
@@ -40,9 +41,11 @@ contract CreatorsContent {
     ContentBuy[] public ContentBuys;
 
     Counters.Counter idCourses;
+    Counters.Counter idBuys;
 
     constructor() payable {
         idCourses.reset();
+        idBuys.reset();
     }
 
     function getUserCoursesLen(address user) private view returns (uint256) {
@@ -157,13 +160,11 @@ contract CreatorsContent {
         return true;
     }
 
-    function setProfileImage(string memory image) public returns (bool) {
+    function setProfileImage(string memory image) public {
 
         uint256 index = getProficeIndexByAddress(msg.sender);
 
         Profiles[index].profilePic = image;
-
-        return true;
     }
 
     function getMyProfile() public view returns (Profile memory) {
@@ -215,13 +216,20 @@ contract CreatorsContent {
     }
 
     function getBalanceForSingleBuy(address payable addr, uint256 indexBuy) public payable {
-        
-        require(ContentBuys[indexBuy].to == addr && ContentBuys[indexBuy].isPayed == false);
+        uint256 indexToClaim = ContentBuys.length;
+
+        for (uint256 i = 0; i < ContentBuys.length; i++ ) {
+            if (ContentBuys[i].id == indexBuy) {
+                indexToClaim = i;
+                i = ContentBuys.length;
+            }
+        }
+
+        require(indexToClaim < ContentBuys.length);
+        require(ContentBuys[indexToClaim].to == addr && ContentBuys[indexBuy].isPayed == false);
 
         addr.transfer(ContentBuys[indexBuy].ammount);
         ContentBuys[indexBuy].isPayed = true;
-        
-        return;
     } 
 
     function getAllBalanceForCreator(address payable addr) public payable {
@@ -243,7 +251,8 @@ contract CreatorsContent {
         Content memory content = getCourseDetail(idCourse);
 
         // Save transaction for that the users can retrieve their money
-        ContentBuys.push( ContentBuy(msg.sender, content.author, idCourse, msg.value, false));
+        ContentBuys.push( ContentBuy(msg.sender, content.author, idCourse, msg.value, false, idBuys.current()));
+        idBuys.increment();
         return;
 
     }
