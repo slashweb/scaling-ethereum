@@ -16,16 +16,20 @@ import {
     FormLabel,
     Text,
 } from "@chakra-ui/react"
-import { getUsdEthValue, getWei } from '../../utils/conversion-coins'
+import { getUsdEthValue, getUsdEthValueForContract, getWei } from '../../utils/conversion-coins'
 import Swal from 'sweetalert2'
+import useCourses from '../../hooks/useCourses'
+import { useSelector } from 'react-redux'
 function BuyModal(props) {
     const { title, price, id } = props
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [isLoading, setIsLoading] = useState(false)
-
+    const wallet = useSelector((state) => state.user.wallet)
     const [eth, setEth] = useState()
     const [conversion, setConversion] = useState()
     const [conversionWei, setConversionWei] = useState()
+
+    const coursesContract = useCourses()
     async function setDolarEthConversion() {
         try {
             const res = await getUsdEthValue(1)
@@ -43,7 +47,7 @@ function BuyModal(props) {
         try {
             const res = await getWei(1)
             setConversionWei(res)
-            
+
         } catch (e) {
             Swal.fire({
                 icon: 'error',
@@ -56,6 +60,17 @@ function BuyModal(props) {
         setEth(quantity * conversion)
     }
 
+    async function confirmTransaction() {
+        setIsLoading(true)
+        const newPrice = await getUsdEthValueForContract(price)
+        const newPriceW = getWei(newPrice)
+        await coursesContract?.methods?.buyContent(id).send({
+            value: newPriceW.toFixed(0),
+            ammount: newPriceW.toFixed(0),
+            from: wallet 
+        })
+        setIsLoading(false)
+    }
     useEffect(() => {
         setDolarEthConversion()
 
@@ -105,9 +120,9 @@ function BuyModal(props) {
                         <Button
                             colorScheme='blue'
                             isLoading={isLoading}
-                            onClick={() => console.log('Comprar')}
+                            onClick={confirmTransaction}
                         >
-                            Buy
+                            Confirm
                         </Button>
                     </ModalFooter>
                 </ModalContent>
